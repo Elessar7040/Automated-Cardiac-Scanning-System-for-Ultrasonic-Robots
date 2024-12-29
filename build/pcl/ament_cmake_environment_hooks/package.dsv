@@ -1,0 +1,4 @@
+source;share/pcl/local_setup.bash
+source;share/pcl/local_setup.dsv
+source;share/pcl/local_setup.sh
+source;share/pcl/local_setup.zsh

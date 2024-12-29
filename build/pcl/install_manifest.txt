@@ -1,0 +1,16 @@
+/home/elessar/russ_ws/ws7/install/pcl/share/ament_index/resource_index/package_run_dependencies/pcl
+/home/elessar/russ_ws/ws7/install/pcl/share/ament_index/resource_index/parent_prefix_path/pcl
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/environment/ament_prefix_path.sh
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/environment/ament_prefix_path.dsv
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/environment/path.sh
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/environment/path.dsv
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/local_setup.bash
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/local_setup.sh
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/local_setup.zsh
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/local_setup.dsv
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/package.dsv
+/home/elessar/russ_ws/ws7/install/pcl/share/ament_index/resource_index/packages/pcl
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/cmake/pclConfig.cmake
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/cmake/pclConfig-version.cmake
+/home/elessar/russ_ws/ws7/install/pcl/share/pcl/package.xml
+/home/elessar/russ_ws/ws7/install/pcl/lib/pcl/pcl_subscriber_node

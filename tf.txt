@@ -1,0 +1,18 @@
+tf_world -> tf_kinect_link:
+Rot(z, 90*) * Trans(0.81694; 0.19139; 0.16929)
+
+tf_pointcloud2 -> tf_world:
+Rot(z, -90*) * Rot(x, -90*) * Trans(-0.81694; -0.19139; -0.16929)
+ATTENTION: 'z', 'x' belong to tf_pointcloud2, and 'x' is rotated after Rot(z, -90*)
+Rot(z, -90*) * Rot(y, 90*) * Trans(-0.81694; -0.19139; -0.16929)
+ATTENTION: 'z', 'x' belong to tf_pointcloud2, not changed
+Rot(z, -90*) * Rot(x, -90*) * Trans(-0.81694; -0.19139; -0.16929)
+ATTENTION: 'z', 'x' belong to tf_world, not changed
+
+tf_wrist_3_link -> tf_ee_link / tf_kinect_link:
+Rot(z, 90*) * Trans(0; 0.1823; 0)
+
+
+home_position_1: Angle: [0*, -90*, 45*, 45*, 0*, 0*]
+		 Radian: [0, 1.57, 0.785, 0.785, 0, 0]
+
