@@ -1,6 +1,0 @@
-[console_scripts]
-ik_node = opencv_description.ikine_test_2:main
-joint_trajectory_node = opencv_description.joint_trajectory_test_1:main
-opencv_node = opencv_description.opencv_test:main
-pointcloud_node = opencv_description.pointcloud2_test:main
-
