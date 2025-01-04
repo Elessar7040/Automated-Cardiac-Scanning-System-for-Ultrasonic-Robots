@@ -33,6 +33,9 @@ add_executable(pose_publisher
 add_executable(moveit_obstacle_avoid_1 
   src/moveit_obstacle_avoid_1.cpp
 )
+add_executable(match_point_converter 
+  src/match_point_converter.cpp
+)
 
 ament_target_dependencies(moveit_example_test
   rclcpp
@@ -59,8 +62,10 @@ ament_target_dependencies(pose_publisher
 ament_target_dependencies(moveit_cartesian_test_3
   rclcpp
   moveit_ros_planning_interface
+  moveit_ros_planning
   geometry_msgs
   tf2_ros
+  sensor_msgs
 )
 ament_target_dependencies(moveit_obstacle_avoid_1
   rclcpp
@@ -68,6 +73,10 @@ ament_target_dependencies(moveit_obstacle_avoid_1
   geometry_msgs
   tf2_ros
   moveit_msgs
+)
+ament_target_dependencies(match_point_converter
+  rclcpp
+  geometry_msgs
 )
 
 install(TARGETS
@@ -77,6 +86,7 @@ install(TARGETS
   moveit_example_test
   pose_publisher
   moveit_obstacle_avoid_1
+  match_point_converter
   DESTINATION lib/${PROJECT_NAME}
 )
 

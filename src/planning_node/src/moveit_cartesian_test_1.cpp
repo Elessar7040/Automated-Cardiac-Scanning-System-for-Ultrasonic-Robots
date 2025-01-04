@@ -67,6 +67,12 @@ private:
         // move_group_ptr->setGoalOrientationTolerance(0.01);  // 设置姿态误差容许范围（弧度）
 
         // 获取当前位姿
+        if (move_group_ptr->getCurrentState()) {  // 检查是否能获取状态
+            RCLCPP_INFO(this->get_logger(), "成功获取机器人状态");
+        }
+        else{
+            RCLCPP_WARN(this->get_logger(), "获取机器人状态失败");
+        }
         geometry_msgs::msg::PoseStamped current_pose = move_group_ptr->getCurrentPose();
         RCLCPP_INFO(this->get_logger(), "当前位置: x=%.3f, y=%.3f, z=%.3f",
             current_pose.pose.position.x,
@@ -111,10 +117,28 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
 };
 
-int main(int argc, char** argv)
+// void async_task(std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_interface_ur_group)
+// {
+//     // 获取当前机器人状态
+//     auto current_state = move_group_interface_ur_group->getCurrentPose();
+//     std::cout << "----------------" << current_state.pose.position.x << std::endl;
+// }
+// void exe(std::shared_ptr<rclcpp::Node> node1)
+// {
+//     auto move_group_interface_ur_group = std::make_shared<moveit::planning_interface::MoveGroupInterface>(node1, "ur_group");
+//     std::thread(std::bind(async_task, move_group_interface_ur_group)).detach();
+// }
+
+// 主函数
+int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<CartesianMotionTest>();
+    // 创建一个多线程执行器，允许异步处理回调
+    // rclcpp::executors::MultiThreadedExecutor executor(rclcpp::ExecutorOptions(), 24); // 使用 24 个线程 
+    // executor.add_node(node);
+    // exe(node);
+    // executor.spin();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;
