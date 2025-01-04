@@ -3,6 +3,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <geometry_msgs/msg/pose.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
 #include <tf2_ros/buffer.h>
 
 class CartesianMotionTest : public rclcpp::Node
@@ -10,9 +11,14 @@ class CartesianMotionTest : public rclcpp::Node
 public:
     CartesianMotionTest() : Node("moveit_cartesian_test")
     {
+        // 创建joint_state_publisher订阅
+        joint_state_sub_ = this->create_subscription<sensor_msgs::msg::JointState>(
+            "/joint_states", 10,
+            std::bind(&CartesianMotionTest::joint_state_callback, this, std::placeholders::_1));
+
         // 延迟初始化 move_group_ptr_
         timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(500),  // 500ms后初始化
+            std::chrono::milliseconds(500),
             std::bind(&CartesianMotionTest::init_move_group, this));
 
         RCLCPP_INFO(this->get_logger(), "节点已启动，等待初始化...");
@@ -30,26 +36,31 @@ private:
 
         // 创建订阅者
         pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
-            "target_pose", 10,
+            "target_pose", 1,
             std::bind(&CartesianMotionTest::pose_callback, this, std::placeholders::_1)
         );
 
         RCLCPP_INFO(this->get_logger(), "笛卡尔运动节点初始化完成，等待目标位姿...");
     }
 
+    // 添加回调函数
+    void joint_state_callback(const sensor_msgs::msg::JointState::SharedPtr msg)
+    {
+        last_joint_state_time_ = this->now();
+    }
+
     void pose_callback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
     {
-
         RCLCPP_INFO(this->get_logger(), "收到新的目标位姿，开始规划...");
 
         move_group_ptr_->setMaxVelocityScalingFactor(0.3);
 
         // 获取当前位姿
         geometry_msgs::msg::PoseStamped current_pose = move_group_ptr_->getCurrentPose();
-        RCLCPP_INFO(this->get_logger(), "当前位置: x=%.3f, y=%.3f, z=%.3f",
-            current_pose.pose.position.x,
-            current_pose.pose.position.y,
-            current_pose.pose.position.z);
+            RCLCPP_INFO(this->get_logger(), "当前位置: x=%.3f, y=%.3f, z=%.3f",
+                        current_pose.pose.position.x,
+                        current_pose.pose.position.y,
+                        current_pose.pose.position.z);
 
         // // 创建目标位姿
         // geometry_msgs::msg::Pose target_pose;
@@ -78,14 +89,14 @@ private:
         } else {
             RCLCPP_ERROR(this->get_logger(), "运动规划失败！");
         }
-
     }
 
     // 添加 timer_ 成员变量
+    rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
+    rclcpp::Time last_joint_state_time_;
     rclcpp::TimerBase::SharedPtr timer_;
     std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_ptr_;
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pose_subscriber_;
-
 };
 
 int main(int argc, char** argv)
