@@ -1,0 +1,15 @@
+# Request
+uint8 operation          # 操作类型
+uint8 ADD_MATERIAL=1     # 添加物料
+uint8 REMOVE_MATERIAL=2  # 移除物料
+uint8 UPDATE_POSE=3      # 更新位姿
+
+string material_id       # 物料ID
+float64[] dimensions    # 物料尺寸 [length, width, height]
+geometry_msgs/Pose pose # 物料位姿
+float64 safety_margin   # 安全边距
+
+---
+# Response
+bool success           # 操作是否成功
+string message        # 状态信息 

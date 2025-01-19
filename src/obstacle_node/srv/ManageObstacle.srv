@@ -1,0 +1,22 @@
+# Request
+uint8 operation          # 操作类型
+uint8 ADD=1             # 添加障碍物
+uint8 REMOVE=2          # 移除障碍物
+uint8 CLEAR=3           # 清除所有障碍物
+
+string obstacle_id      # 障碍物ID
+uint8 primitive_type    # 障碍物类型
+uint8 BOX=1            # 箱体
+uint8 CYLINDER=2       # 圆柱体
+uint8 PLANE=3          # 平面
+
+# 障碍物尺寸
+float64[] dimensions    # BOX: [length, width, height]
+                       # CYLINDER: [radius, height]
+                       # PLANE: [a, b, c, d] (ax + by + cz + d = 0)
+
+geometry_msgs/Pose pose # 障碍物位姿
+---
+# Response
+bool success           # 操作是否成功
+string message         # 结果信息 

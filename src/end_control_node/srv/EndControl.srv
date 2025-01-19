@@ -1,0 +1,13 @@
+# Request
+uint8 device_type    # 设备类型
+uint8 TYPE_SUCTION=1 # 吸盘
+uint8 TYPE_GRIPPER=2 # 夹爪
+
+uint8 device_id      # 设备ID
+float64 action      # 动作参数 (1.0:开启, 0.0:关闭)
+geometry_msgs/Pose pose # 末端位姿
+
+---
+# Response
+bool success         # 操作是否成功
+string message      # 状态信息 

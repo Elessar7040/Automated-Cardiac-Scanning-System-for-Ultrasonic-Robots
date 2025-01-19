@@ -1,3 +1,11 @@
+/*
+ * @Author: "feiyang_hong" "feiyang.hong@infinityrobot.cn"
+ * @Date: 2024-12-27 16:54:58
+ * @LastEditors: "feiyang_hong" "feiyang.hong@infinityrobot.cn"
+ * @LastEditTime: 2025-01-02 16:33:27
+ * @FilePath: /planning_control_node/src/planning_node/src/pose_publisher.cpp
+ * @Description: 发布目标位姿的节点，话题为"/target_pose"
+ */
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 
@@ -10,15 +18,47 @@ public:
             "target_pose", 10);
 
         timer_ = this->create_wall_timer(
-            std::chrono::seconds(5),  // 每5秒发送一次新的目标位姿
+            std::chrono::seconds(8),  // 每5秒发送一次新的目标位姿
             std::bind(&PosePublisher::timer_callback, this));
         
         // 预设目标点
         target_poses_ = {
-            {0.3, 0.3, 0.5},
-            {0.5, 0.3, 0.5},
+            // {0.3, 0.3, 0.3},
+            // {0.4, 0.4, 0.3},
+            // {0.5, 0.4, 0.3},
+            // {0.5, 0.5, 0.3},
+            // {0.3, 0.5, 0.3},
+            // 用于测试box, cylinder障碍物
+            // {0.5, 0.0, 0.6},
+            // {0.5, 0.0, 0.1},
+            // {0.5, 0.2, 0.1},
+            // {0.5, 0.2, 0.6},
+            // 用于测试ground plane障碍物
+            // {-0.5, 0.0, 0.6},
+            // {-0.5, 0.0, 0.1},
+            // {-0.5, 0.0, 0.2},
+            // {-0.5, 0.2, 0.2},
+            // {-0.5, 0.3, 0.2},
+            // {-0.5, 0.3, 0.6},
+            // {-0.5, 0.3, -0.1},
+            // 
+            // {0.5, 0.0, 0.6},
+            // {0.5, 0.0, 0.1},
+            // {0.5, 0.0, 0.2},
+            // {0.5, 0.2, 0.2},
+            // {0.5, 0.3, 0.2},
+            // {0.5, 0.3, 0.6},
+            // {0.5, 0.3, -0.1},
+            // 
+            {0.5, 0.0, 0.6},
+            {0.5, 0.0, -0.1},
             {0.5, 0.3, 0.6},
-            {0.3, 0.3, 0.6},
+            // 用于测试实际机械臂
+            // {-0.5, 0.0, 0.4},
+            // {-0.5, 0.0, 0.6},
+            // {-0.5, 0.2, 0.6},
+            // {-0.5, 0.2, 0.4},
+            // {-0.5, 0.0, 0.4},
         };
             
         RCLCPP_INFO(this->get_logger(), "位姿发布节点已启动");

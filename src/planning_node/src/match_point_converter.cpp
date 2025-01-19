@@ -12,7 +12,8 @@ public:
         this->declare_parameter("filter_window_size", 5);  // 滤波窗口大小
         this->declare_parameter("position_threshold", 0.02);  // 位置变化阈值（米）
         
-        filter_window_size_ = this->get_parameter("filter_window_size").as_int();
+        filter_window_size_ = static_cast<std::size_t>(
+            this->get_parameter("filter_window_size").as_int());
         position_threshold_ = this->get_parameter("position_threshold").as_double();
 
         // 创建订阅者
@@ -25,7 +26,7 @@ public:
             "target_pose", 10);
         
         RCLCPP_INFO(this->get_logger(), "Match Point Converter节点已启动");
-        RCLCPP_INFO(this->get_logger(), "滤波窗口大小: %d", filter_window_size_);
+        RCLCPP_INFO(this->get_logger(), "滤波窗口大小: %zu", filter_window_size_);
         RCLCPP_INFO(this->get_logger(), "位置变化阈值: %.3f", position_threshold_);
     }
 
@@ -110,7 +111,7 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr publisher_;
     std::deque<geometry_msgs::msg::Point> point_buffer_;  // 点的缓存队列
     std::unique_ptr<geometry_msgs::msg::Point> last_published_point_;  // 上次发布的点
-    int filter_window_size_;  // 滤波窗口大小
+    std::size_t filter_window_size_;  // 滤波窗口大小
     double position_threshold_;  // 位置变化阈值
 };
 
