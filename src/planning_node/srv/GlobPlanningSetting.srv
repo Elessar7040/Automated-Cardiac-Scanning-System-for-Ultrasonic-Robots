@@ -1,0 +1,14 @@
+# Request
+bool obstacle_avoidance_enabled    # 避障开关
+uint8 planning_mode               # 规划模式
+
+# 规划模式的常量定义
+uint8 MODE_NORMAL = 0            # 普通模式
+uint8 MODE_SAFE = 1              # 安全模式
+uint8 MODE_FAST = 2              # 快速模式
+uint8 MODE_PRECISE = 3           # 精确模式
+
+---
+# Response
+bool success                      # 设置是否成功
+string message                    # 返回信息

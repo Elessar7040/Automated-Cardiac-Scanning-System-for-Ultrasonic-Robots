@@ -11,45 +11,84 @@ find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(end_control_node REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(moveit_example_test 
-  src/moveit_example_test.cpp
+find_package(pybind11 REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+
+# 添加 Python 头文件路径
+include_directories(${Python3_INCLUDE_DIRS})
+
+# 添加头文件目录
+include_directories(
+  include
 )
-add_executable(moveit_cartesian_test_1 
-  src/moveit_cartesian_test_1.cpp
+
+# 确保头文件被安装
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+# 添加action依赖
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "action/MoveEndToAbsPos.action"
+  "action/MoveEndToRelPos.action"
+  "action/WaypointMotion.action"
+  "srv/GlobPlanningSetting.srv"
+  "msg/Waypoint.msg"
+  DEPENDENCIES geometry_msgs
+)
+# 生成导出依赖
+rosidl_get_typesupport_target(cpp_typesupport_target 
+  "${PROJECT_NAME}" "rosidl_typesupport_cpp"
+)
+
+add_executable(moveit_cartesian_test 
+  test/moveit_cartesian_test.cpp
 )
 add_executable(moveit_cartesian_test_2 
-  src/moveit_cartesian_test_2.cpp
-)
-add_executable(moveit_cartesian_test_3 
-  src/moveit_cartesian_test_3.cpp
+  test/moveit_cartesian_test_2.cpp
 )
 add_executable(pose_publisher 
-  src/pose_publisher.cpp
+  test/pose_publisher.cpp
 )
-add_executable(moveit_obstacle_avoid_1 
-  src/moveit_obstacle_avoid_1.cpp
+add_executable(moveit_obstacle_avoid_test 
+  test/moveit_obstacle_avoid_test.cpp
 )
-add_executable(match_point_converter 
+add_executable(cartesian_abs_action_server
+  src/cartesian_abs_action_server.cpp
+)
+add_executable(cartesian_abs_action_client
+  src/cartesian_abs_action_client.cpp
+)
+add_executable(cartesian_rel_action_server
+  src/cartesian_rel_action_server.cpp
+)
+add_executable(cartesian_rel_action_client
+  src/cartesian_rel_action_client.cpp
+)
+add_executable(cartesian_abs_action_client_test
+  test/cartesian_abs_action_client_test.cpp
+)
+add_executable(cartesian_rel_action_client_test
+  test/cartesian_rel_action_client_test.cpp
+)
+add_executable(waypoint_action_server
+  src/waypoint_action_server.cpp
+)
+add_executable(waypoint_action_client_test
+  test/waypoint_action_client_test.cpp
+)
+add_executable(match_point_converter
   src/match_point_converter.cpp
 )
 
-ament_target_dependencies(moveit_example_test
-  rclcpp
-  moveit_ros_planning_interface
-  geometry_msgs
-  tf2_ros
-)
-ament_target_dependencies(moveit_cartesian_test_1
-  rclcpp
-  moveit_ros_planning_interface
-  geometry_msgs
-  tf2_ros
-)
-ament_target_dependencies(moveit_cartesian_test_2
+ament_target_dependencies(moveit_cartesian_test
   rclcpp
   moveit_ros_planning_interface
   geometry_msgs
@@ -59,33 +98,113 @@ ament_target_dependencies(pose_publisher
   rclcpp
   geometry_msgs
 )
-ament_target_dependencies(moveit_cartesian_test_3
+ament_target_dependencies(moveit_cartesian_test_2
   rclcpp
   moveit_ros_planning_interface
-  moveit_ros_planning
   geometry_msgs
   tf2_ros
-  sensor_msgs
 )
-ament_target_dependencies(moveit_obstacle_avoid_1
+ament_target_dependencies(moveit_obstacle_avoid_test
   rclcpp
   moveit_ros_planning_interface
   geometry_msgs
   tf2_ros
   moveit_msgs
 )
+ament_target_dependencies(cartesian_abs_action_server
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+)
+ament_target_dependencies(cartesian_abs_action_client
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+)
+ament_target_dependencies(cartesian_rel_action_server
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+  tf2_geometry_msgs
+)
+ament_target_dependencies(cartesian_rel_action_client
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+  tf2_geometry_msgs
+)
+ament_target_dependencies(cartesian_abs_action_client_test
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+  tf2_geometry_msgs
+)
+ament_target_dependencies(cartesian_rel_action_client_test
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+  tf2_geometry_msgs
+)
+ament_target_dependencies(waypoint_action_server
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  end_control_node
+)
+ament_target_dependencies(waypoint_action_client_test
+  rclcpp
+  rclcpp_action
+)
 ament_target_dependencies(match_point_converter
   rclcpp
   geometry_msgs
 )
 
+# 链接生成的接口库
+target_link_libraries(cartesian_abs_action_server 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_abs_action_client 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_rel_action_server 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_rel_action_client 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_abs_action_client_test 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_rel_action_client_test 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(waypoint_action_server 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(waypoint_action_client_test 
+  "${cpp_typesupport_target}"
+)
+
 install(TARGETS
-  moveit_cartesian_test_1
   moveit_cartesian_test_2
-  moveit_cartesian_test_3
-  moveit_example_test
+  moveit_cartesian_test
   pose_publisher
-  moveit_obstacle_avoid_1
+  moveit_obstacle_avoid_test
+  cartesian_abs_action_server
+  cartesian_abs_action_client
+  cartesian_rel_action_server
+  cartesian_rel_action_client
+  cartesian_abs_action_client_test
+  cartesian_rel_action_client_test
+  waypoint_action_server
+  waypoint_action_client_test
   match_point_converter
   DESTINATION lib/${PROJECT_NAME}
 )

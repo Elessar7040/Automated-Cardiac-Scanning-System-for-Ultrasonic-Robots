@@ -1,0 +1,12 @@
+# Request
+string arm_id                    # 机械臂ID
+planning_node/Waypoint[] waypoints            # 航点列表
+---
+# Result
+bool success                    # 执行结果
+string message                  # 结果信息
+---
+# Feedback
+uint32 current_waypoint        # 当前执行到的航点索引
+float32 completion_percentage  # 完成百分比
+string current_state          # 当前状态描述 

@@ -32,12 +32,12 @@ class PointCloudProcessor(Node):
         self.joint_name = ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
         self.o3d_class = o3d.geometry.PointCloud()
         
-        self.subscription_point_cloud = self.create_subscription(PointCloud2, "/custom_ns/custom_camera/custom_points", self.callback, 10)
-        self.subscription_match_point = self.create_subscription(Point, '/match_point', self.match_point_callback, 10)
+        self.subscription_point_cloud = self.create_subscription(PointCloud2, "/custom_ns/custom_camera/custom_points", self.callback, 1)
+        self.subscription_match_point = self.create_subscription(Point, '/match_point', self.match_point_callback, 5)
         # self.subscription_joint_state = self.create_subscription(JointState, "/joint_states", self.joint_state_callback, 10)
         # self.publisher_point_cloud = self.create_publisher(PointCloud2, "/transformed_point_cloud", 10)
         self.publisher_point_cloud = self.create_publisher(PointCloud2, "/transformed_point_cloud", 1)
-        self.publisher_downsampled_point_cloud = self.create_publisher(PointCloud2, "/transformed_downsampled_point_cloud", 10)
+        self.publisher_downsampled_point_cloud = self.create_publisher(PointCloud2, "/transformed_downsampled_point_cloud", 1)
         # self.match_point_publisher = self.create_publisher(Point, '/match_point_xyz', 10)
         # self.vis = o3d.visualization.Visualizer()
         # self.vis.create_window()

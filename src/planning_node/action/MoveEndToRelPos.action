@@ -1,0 +1,11 @@
+# goal
+string arm_id
+geometry_msgs/Pose pos  # 相对位姿增量
+---
+# result
+bool success
+string message
+---
+# feedback
+float64 completion_percentage
+geometry_msgs/Pose current_pose
