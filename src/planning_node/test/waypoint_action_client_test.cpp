@@ -89,7 +89,7 @@ public:
         planning_node::msg::Waypoint init_point;
         init_point.waypoint_type = planning_node::msg::Waypoint::TYPE_INIT;
         init_point.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
-        init_point.waypoint_pose.position.x = -0.4;
+        init_point.waypoint_pose.position.x = 0.5;
         init_point.waypoint_pose.position.y = 0.0;
         init_point.waypoint_pose.position.z = 0.5;
         init_point.waypoint_pose.orientation.w = 1.0;
@@ -100,8 +100,8 @@ public:
         planning_node::msg::Waypoint work_point1;
         work_point1.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
         work_point1.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
-        work_point1.waypoint_pose.position.x = -0.5;
-        work_point1.waypoint_pose.position.y = 0.2;
+        work_point1.waypoint_pose.position.x = 0.5;
+        work_point1.waypoint_pose.position.y = 0.0;
         work_point1.waypoint_pose.position.z = 0.3;
         work_point1.waypoint_pose.orientation.w = 1.0;
         work_point1.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_SMOOTH;
@@ -114,8 +114,8 @@ public:
         planning_node::msg::Waypoint work_point2;
         work_point2.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
         work_point2.waypoint_mode = planning_node::msg::Waypoint::MODE_UNLOAD;
-        work_point2.waypoint_pose.position.x = -0.4;
-        work_point2.waypoint_pose.position.y = -0.2;
+        work_point2.waypoint_pose.position.x = 0.5;
+        work_point2.waypoint_pose.position.y = 0.2;
         work_point2.waypoint_pose.position.z = 0.3;
         work_point2.waypoint_pose.orientation.w = 1.0;
         work_point2.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_FORCE;
@@ -128,9 +128,9 @@ public:
         planning_node::msg::Waypoint end_point;
         end_point.waypoint_type = planning_node::msg::Waypoint::TYPE_END;
         end_point.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
-        end_point.waypoint_pose.position.x = -0.4;
-        end_point.waypoint_pose.position.y = 0.0;
-        end_point.waypoint_pose.position.z = 0.5;
+        end_point.waypoint_pose.position.x = 0.5;
+        end_point.waypoint_pose.position.y = 0.1;
+        end_point.waypoint_pose.position.z = 0.3;
         end_point.waypoint_pose.orientation.w = 1.0;
         end_point.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_STOP;
         waypoints.push_back(end_point);
