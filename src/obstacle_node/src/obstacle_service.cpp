@@ -56,7 +56,7 @@ public:
     {
         // 创建障碍物管理服务
         obstacle_service_ = this->create_service<obstacle_node::srv::ManageObstacle>(
-            "manageObstacle",
+            "manage_obstacle",
             std::bind(&ObstacleService::handle_obstacle_request, this,
                 std::placeholders::_1, std::placeholders::_2));
 
@@ -69,13 +69,8 @@ public:
         planning_scene_interface_ = 
             std::make_shared<moveit::planning_interface::PlanningSceneInterface>();
 
-        // 添加服务状态监控
-        service_status_timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(10),
-            std::bind(&ObstacleService::check_service_status, this));
-
         // 添加预设障碍物
-        // add_predefined_obstacles();
+        add_predefined_obstacles();
 
         RCLCPP_INFO(this->get_logger(), "障碍物服务已启动");
     }
@@ -272,6 +267,34 @@ private:
         }
     }
 
+    // 添加验证函数
+    bool verify_obstacle_exists(const std::string &obstacle_id)
+    {
+        try
+        {
+            // 等待一小段时间让更改生效
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            // 获取当前场景中的所有碰撞对象
+            auto collision_objects = planning_scene_interface_->getObjects();
+
+            // 检查特定障碍物是否存在
+            bool exists = collision_objects.find(obstacle_id) != collision_objects.end();
+
+            if (!exists)
+            {
+                RCLCPP_WARN(this->get_logger(), "障碍物 %s 不存在于场景中", obstacle_id.c_str());
+            }
+
+            return exists;
+        }
+        catch (const std::exception &e)
+        {
+            RCLCPP_ERROR(this->get_logger(), "验证障碍物存在时发生错误: %s", e.what());
+            return false;
+        }
+    }
+
     bool remove_obstacle(const std::string& obstacle_id)
     {
         try {
@@ -331,9 +354,23 @@ private:
             ground_pose
         );
 
+        // 尝试多次添加地面，直到成功
+        int max_attempts = 3;
+        bool success = false;
+
+        for (int i = 0; i < max_attempts && !success; ++i)
+        {
+            success = add_obstacle(
+                "ground_plane",
+                obstacle_node::srv::ManageObstacle::Request::PLANE,
+                ground_plane_coef,
+                ground_pose);
+        }
+        verify_obstacle_exists("ground_plane");
+
         // 添加预设的箱体障碍物
         geometry_msgs::msg::Pose box_pose;
-        box_pose.position.x = 0.5;
+        box_pose.position.x = 1.5;
         box_pose.position.y = 0.0;
         box_pose.position.z = 0.25;
         box_pose.orientation.w = 1.0;
@@ -345,9 +382,11 @@ private:
             box_pose
         );
 
+        verify_obstacle_exists("box_1");
+
         // 添加预设的圆柱体障碍物
         geometry_msgs::msg::Pose cylinder_pose;
-        cylinder_pose.position.x = 0.5;
+        cylinder_pose.position.x = 1.5;
         cylinder_pose.position.y = 0.0;
         cylinder_pose.position.z = 0.35;
         cylinder_pose.orientation.w = 1.0;
@@ -358,6 +397,8 @@ private:
             {0.05, 0.05},  // 半径和高度
             cylinder_pose
         );
+
+        verify_obstacle_exists("cylinder_1");
     }
 
     bool add_material(
