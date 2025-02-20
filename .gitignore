@@ -4,3 +4,5 @@ log/
 *.pyc
 __pycache__/
 .vscode/" > .gitignore
+
+src/trac_ik/nlopt/nlopt-2.7.1/
