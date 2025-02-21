@@ -29,7 +29,7 @@ class PointCloudProcessor(Node):
         self.normal_vector = []
 
 
-        self.joint_name = ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint']
+        self.joint_name = ['shoulder_joint', 'upper_arm_joint', 'forearm_joint', 'wrist1_joint', 'wrist2_joint', 'wrist3_joint']
         self.o3d_class = o3d.geometry.PointCloud()
         
         self.subscription_point_cloud = self.create_subscription(PointCloud2, "/custom_ns/custom_camera/custom_points", self.callback, 1)
