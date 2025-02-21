@@ -109,7 +109,7 @@ private:
 
         auto goal_msg = MoveEndToRelPos::Goal();
         goal_msg.pos = test_case.targets[target_index];
-        goal_msg.arm_id = "ur_group";
+        goal_msg.arm_id = "russ_group";
         
         RCLCPP_INFO(this->get_logger(), 
             "执行移动: %s (%.2f, %.2f, %.2f)",

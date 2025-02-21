@@ -34,7 +34,7 @@ private:
 
         // 在这里初始化 move_group_ptr_
         move_group_ptr_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
-            shared_from_this(), "ur_group");
+            shared_from_this(), "russ_group");
         
         // 创建订阅者
         pose_subscriber_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
