@@ -1,0 +1,36 @@
+planning_plugin: ompl_interface/OMPLPlanner
+request_adapters: >-
+  default_planner_request_adapters/AddTimeOptimalParameterization
+  default_planner_request_adapters/FixWorkspaceBounds
+  default_planner_request_adapters/FixStartStateBounds
+  default_planner_request_adapters/FixStartStateCollision
+  default_planner_request_adapters/FixStartStatePathConstraints
+
+ir100_arm_slider_group:
+  planner_configs:
+    - RRTConnect  # 双向快速随机树
+    - TRRT        # Transition-based RRT，考虑代价的RRT变体
+    - BiTRRT      # 双向TRRT
+    - LBKPIECE    # Lazy Bi-directional KPIECE，适用于高维空间
+  
+  # 投影评估器：用于降维，选择重要的关节来指导采样
+  projection_evaluator: joints(shoulder_joint)
+  # 最长有效段分数：轨迹插值的精度，越小越精确但计算量更大
+  longest_valid_segment_fraction: 0.005
+
+# 添加规划器配置
+TRRT:
+  type: geometric::TRRT
+  range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
+  goal_bias: 0.05  # When close to goal select goal, with this probability. default: 0.05
+  max_states_failed: 10  # when to start increasing temp. default: 10
+  temp_change_factor: 2.0  # how much to increase or decrease temp. default: 2.0
+  min_temperature: 10e-10  # lower bound of temp change. default: 10e-10
+  init_temperature: 10e-6  # initial temperature. default: 10e-6
+  frountier_threshold: 0.0  # dist new state to nearest neighbor to disqualify as frontier. default: 0.0 set in setup() 
+  frountierNodeRatio: 0.1  # 1/10, or 1 nonfrontier for every 10 frontier. default: 0.1
+  k_constant: 0.0  # value used to normalize expression. default: 0.0 set in setup()
+
+RRTConnect:
+  type: geometric::RRTConnect
+  range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup() 
