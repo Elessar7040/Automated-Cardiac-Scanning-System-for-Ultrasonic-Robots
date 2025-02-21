@@ -30,10 +30,10 @@ public:
             {
                 "测试用例1: 基本位置移动",
                 {
-                    create_target(0.4, 0.0, 0.5, "初始位置"),
-                    create_target(0.5, 0.2, 0.3, "前方位置"),
-                    create_target(0.4, -0.2, 0.3, "后方位置"),
-                    create_target(0.4, 0.0, 0.5, "返回初始位置")
+                    create_target(0.4, 0.6, 1.0, "初始位置"),
+                    create_target(0.5, 0.9, 0.9, "前方位置"),
+                    create_target(0.4, 1.0, 1.3, "后方位置"),
+                    create_target(0.4, 0.7, 1.2, "返回初始位置")
 
                     // {0.5, 0.0, 0.6},
                     // {0.5, 0.0, -0.1},
@@ -44,9 +44,9 @@ public:
             {
                 "测试用例2: 避障测试",
                 {
-                    create_target(0.5, 0.0, 0.6, "避障可执行位置"),
-                    create_target(0.5, 0.0, -0.1, "避障不可执行位置"),
-                    create_target(0.5, 0.3, 0.6, "避障可执行位置"),
+                    create_target(0.6, 1.1, 1.0, "避障可执行位置"),
+                    create_target(0.5, 0.9, 1.1, "避障不可执行位置"),
+                    create_target(0.0, 0.7, 1.4, "避障可执行位置"),
                 },
                 {"避障可执行位置", "避障不可执行位置", "避障可执行位置"}  // 明确初始化描述列表
             }
@@ -123,7 +123,7 @@ private:
 
         auto goal_msg = MoveEndToAbsPos::Goal();
         goal_msg.pos = test_case.targets[target_index];
-        goal_msg.arm_id = "ur_group";
+        goal_msg.arm_id = "russ_group";
 
         RCLCPP_INFO(this->get_logger(), 
             "执行移动: %s (%.2f, %.2f, %.2f)",

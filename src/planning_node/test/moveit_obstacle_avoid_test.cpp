@@ -42,7 +42,7 @@ private:
         timer_->cancel();
         try {
             // 从Python对象获取机器人组名称
-            std::string group_name = "ur_group";
+            std::string group_name = "russ_group";
             
             // 使用获取到的组名初始化 move_group_ptr_
             move_group_ptr_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(

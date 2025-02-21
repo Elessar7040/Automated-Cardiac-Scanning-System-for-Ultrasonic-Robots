@@ -80,7 +80,7 @@ public:
 
         auto goal_msg = WaypointMotion::Goal();
         // goal_msg.arm_id = robot_.attr("robot_group").cast<std::string>();
-        goal_msg.arm_id = "ur_group";
+        goal_msg.arm_id = "russ_group";
 
         // 创建测试航点序列
         std::vector<planning_node::msg::Waypoint> waypoints;

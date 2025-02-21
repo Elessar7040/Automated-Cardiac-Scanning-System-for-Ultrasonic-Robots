@@ -65,7 +65,7 @@ private:
         }
 
         auto goal_msg = MoveEndToAbsPos::Goal();
-        goal_msg.arm_id = "ur_group";
+        goal_msg.arm_id = "russ_group";
         goal_msg.pos = target_pose;
 
         RCLCPP_INFO(this->get_logger(), 

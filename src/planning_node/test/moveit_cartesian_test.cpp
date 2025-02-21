@@ -63,7 +63,7 @@ private:
         // auto move_group_ptr = std::make_shared<moveit::planning_interface::MoveGroupInterface>(options);
 
         auto move_group_ptr = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
-            shared_from_this(), "ur_group");  // 替换为您的规划组名称
+            shared_from_this(), "russ_group");  // 替换为您的规划组名称
 
         RCLCPP_INFO(this->get_logger(), "move_group已创建...");
 
