@@ -12,6 +12,7 @@
     ],
     "window.zoomLevel": 2,
     "files.associations": {
-        "functional": "cpp"
+        "functional": "cpp",
+        "core": "cpp"
     }
 }

@@ -48,12 +48,25 @@ private:
             // 获取从相机到世界坐标系的变换
             geometry_msgs::msg::TransformStamped transform_stamped;
             transform_stamped = tf_buffer_->lookupTransform(
-                "base_link",                    // 目标坐标系
+                "table_base_link",                    // 目标坐标系
                 input_cloud->header.frame_id, // 源坐标系
                 input_cloud->header.stamp);   // 使用点云的时间戳
 
             // 创建变换矩阵
             Eigen::Affine3f transform = Eigen::Affine3f::Identity();
+
+            // 添加X轴旋转90度（π/2弧度）
+            // Eigen::AngleAxisf rotation_x(M_PI / 6, Eigen::Vector3f::UnitX());
+            // transform.rotate(rotation_x);
+
+            Eigen::AngleAxisf rotation_y(M_PI / 2, Eigen::Vector3f::UnitY());
+            transform.rotate(rotation_y);
+
+            Eigen::AngleAxisf rotation_z(M_PI / 3, Eigen::Vector3f::UnitZ());
+            transform.rotate(rotation_z);
+
+            Eigen::AngleAxisf rotation_x(M_PI / 6, Eigen::Vector3f::UnitX());
+            transform.rotate(rotation_x);
 
             // 设置平移
             transform.translation() << 
@@ -68,6 +81,10 @@ private:
                 transform_stamped.transform.rotation.y,
                 transform_stamped.transform.rotation.z);
             transform.rotate(q);
+
+            // 添加X轴旋转90度（π/2弧度）
+            // Eigen::AngleAxisf rotation_x(M_PI / 2, Eigen::Vector3f::UnitX());
+            // transform.rotate(rotation_x);
 
             // 执行点云变换
             pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud(new pcl::PointCloud<pcl::PointXYZ>);
