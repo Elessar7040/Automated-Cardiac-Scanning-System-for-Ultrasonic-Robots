@@ -89,21 +89,21 @@
   </joint>
   <link name="kinect_link">
     <inertial>
-      <origin xyz="0.0070113 0.0024111 -0.00023078" rpy="0 1.5708 0" />
+      <origin xyz="0.0070113 0.0024111 -0.00023078" rpy="0 0 1.5708" />
       <mass value="0.64645" />
       <inertia ixx="0.0029627" ixy="3.4581E-08" ixz="-1.4774E-07" iyy="0.00026363" iyz="-2.566E-06" izz="0.0028425" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
+      <origin xyz="0 0 0" rpy="0 0 1.5708" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/camera_link.STL" />
+        <mesh filename="package://russ_description/meshes/kinect.dae" />
       </geometry>
       <material name="">
         <color rgba="0.79216 0.81961 0.93333 1" />
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 1.5708 0" />
+      <origin xyz="0 0 0" rpy="0 0 1.5708" />
       <geometry>
         <mesh filename="package://russ_description/meshes/camera_link.STL" />
       </geometry>
@@ -124,7 +124,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/arm_base_link.STL" />
+        <mesh filename="package://russ_description/meshes/base.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -152,7 +152,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/shoulder_link.STL" />
+        <mesh filename="package://russ_description/meshes/shoulder.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -182,7 +182,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/upperarm_link.STL" />
+        <mesh filename="package://russ_description/meshes/upperarm.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -212,7 +212,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/forearm_link.STL" />
+        <mesh filename="package://russ_description/meshes/forearm.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -242,7 +242,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/wrist1_link.STL" />
+        <mesh filename="package://russ_description/meshes/wrist1.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -272,7 +272,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/wrist2_link.STL" />
+        <mesh filename="package://russ_description/meshes/wrist2.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -302,7 +302,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/wrist3_link.STL" />
+        <mesh filename="package://russ_description/meshes/wrist3.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
