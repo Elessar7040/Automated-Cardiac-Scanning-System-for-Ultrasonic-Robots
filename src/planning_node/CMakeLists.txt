@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -86,6 +87,17 @@ add_executable(waypoint_action_client_test
 )
 add_executable(match_point_converter
   src/match_point_converter.cpp
+)
+add_executable(ik_planning_test test/ik_planning_test.cpp)
+target_include_directories(ik_planning_test PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(ik_planning_test PUBLIC c_std_99 cxx_std_17)
+ament_target_dependencies(ik_planning_test
+  rclcpp
+  moveit_core
+  moveit_ros_planning_interface
+  geometry_msgs
 )
 
 ament_target_dependencies(moveit_cartesian_test
@@ -206,6 +218,7 @@ install(TARGETS
   waypoint_action_server
   waypoint_action_client_test
   match_point_converter
+  ik_planning_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
