@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: russ_description
+    relative_path: urdf/russ_man.urdf
+  srdf:
+    relative_path: config/russ.srdf
+  package_settings:
+    author_name: feiyang_hong
+    author_email: feiyanghong7040@qq.com
+    generated_timestamp: 1741021285
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

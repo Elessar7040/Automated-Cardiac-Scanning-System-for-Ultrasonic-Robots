@@ -1,0 +1,25 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - russ_group_controller
+
+  russ_group_controller:
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - shoulder_joint
+      - upperarm_joint
+      - forearm_joint
+      - wrist1_joint
+      - wrist2_joint
+      - wrist3_joint
+
+collision_check:
+  acm_override_pairs:
+    - object1: man_link
+      object2: probe_link
+      allowed: true
