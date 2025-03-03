@@ -108,20 +108,36 @@ private:
 
         // 规划和执行
         moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-        bool success = (move_group->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+        bool plan_success = (move_group->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
 
-        if (success) {
-            // 执行运动
-            move_group->execute(my_plan);
+        if (plan_success) {
+            // 执行运动并检查执行结果
+            moveit::core::MoveItErrorCode execute_result = move_group->execute(my_plan);
+            bool execute_success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
 
-            // 获取最终位姿
-            auto final_pose = move_group->getCurrentPose();
-            
-            result->success = true;
-            result->message = "运动执行成功";
+            if (execute_success) {
+                // 获取最终位姿
+                auto final_pose = move_group->getCurrentPose();
+                
+                result->success = true;
+                result->message = "运动执行成功";
+            } else {
+                result->success = false;
+                result->message = "执行失败，错误代码: " + std::to_string(execute_result.val);
+                RCLCPP_ERROR(this->get_logger(), "运动执行失败，错误代码: %d", execute_result.val);
+            }
         } else {
             result->success = false;
             result->message = "规划失败";
+            RCLCPP_ERROR(this->get_logger(), "路径规划失败");
+        }
+
+        if (goal_handle->is_canceling()) {
+            result->success = false;
+            result->message = "任务被取消";
+            goal_handle->canceled(result);
+            RCLCPP_INFO(this->get_logger(), "目标被取消");
+            return;
         }
 
         goal_handle->succeed(result);

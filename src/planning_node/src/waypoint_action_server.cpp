@@ -200,11 +200,16 @@ private:
                 move_group_->setGoalOrientationTolerance(orientation_tolerance);
                 
                 auto plan_result = move_group_->plan(plan);
-                success = (plan_result == moveit::core::MoveItErrorCode::SUCCESS);
+                bool plan_success = (plan_result == moveit::core::MoveItErrorCode::SUCCESS);
                 
-                if (success) {
+                if (plan_success) {
                     RCLCPP_INFO(this->get_logger(), "规划成功，执行移动");
-                    success = (move_group_->execute(plan) == moveit::core::MoveItErrorCode::SUCCESS);
+                    auto execute_result = move_group_->execute(plan);
+                    success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
+                    
+                    if (!success) {
+                        RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
+                    }
                 } else {
                     RCLCPP_WARN(this->get_logger(), "规划失败，增加容差后重试...");
                     // 每次失败后增加容差
@@ -214,7 +219,7 @@ private:
             }
 
             if (!success) {
-                RCLCPP_ERROR(this->get_logger(), "在%d次尝试后规划失败", max_attempts);
+                RCLCPP_ERROR(this->get_logger(), "在%d次尝试后规划或执行失败", max_attempts);
             }
 
             return success;
