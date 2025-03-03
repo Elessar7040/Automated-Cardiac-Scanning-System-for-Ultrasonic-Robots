@@ -102,7 +102,7 @@ public:
         work_point1.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
         work_point1.waypoint_pose.position.x = 0.5;
         work_point1.waypoint_pose.position.y = 0.0;
-        work_point1.waypoint_pose.position.z = 0.3;
+        work_point1.waypoint_pose.position.z = 0.7;
         work_point1.waypoint_pose.orientation.w = 1.0;
         work_point1.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_SMOOTH;
         work_point1.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
@@ -116,7 +116,7 @@ public:
         work_point2.waypoint_mode = planning_node::msg::Waypoint::MODE_UNLOAD;
         work_point2.waypoint_pose.position.x = 0.5;
         work_point2.waypoint_pose.position.y = 0.2;
-        work_point2.waypoint_pose.position.z = 0.3;
+        work_point2.waypoint_pose.position.z = 0.7;
         work_point2.waypoint_pose.orientation.w = 1.0;
         work_point2.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_FORCE;
         work_point2.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
@@ -130,7 +130,7 @@ public:
         end_point.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
         end_point.waypoint_pose.position.x = 0.5;
         end_point.waypoint_pose.position.y = 0.1;
-        end_point.waypoint_pose.position.z = 0.3;
+        end_point.waypoint_pose.position.z = 0.5;
         end_point.waypoint_pose.orientation.w = 1.0;
         end_point.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_STOP;
         waypoints.push_back(end_point);

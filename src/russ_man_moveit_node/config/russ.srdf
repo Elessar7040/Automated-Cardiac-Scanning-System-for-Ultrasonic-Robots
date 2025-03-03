@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="russ">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="russ_group">
+        <chain base_link="table_base_link" tip_link="probe_link"/>
+    </group>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="base_link" link2="bed_link" reason="Never"/>
+    <disable_collisions link1="base_link" link2="camera_holder_link" reason="Never"/>
+    <disable_collisions link1="base_link" link2="kinect_link" reason="Never"/>
+    <disable_collisions link1="base_link" link2="man_link" reason="Never"/>
+    <disable_collisions link1="base_link" link2="shoulder_link" reason="Adjacent"/>
+    <disable_collisions link1="base_link" link2="table_base_link" reason="Adjacent"/>
+    <disable_collisions link1="bed_link" link2="camera_holder_link" reason="Never"/>
+    <disable_collisions link1="bed_link" link2="kinect_link" reason="Never"/>
+    <!-- <disable_collisions link1="bed_link" link2="man_link" reason="Adjacent"/> -->
+    <disable_collisions link1="bed_link" link2="shoulder_link" reason="Never"/>
+    <disable_collisions link1="bed_link" link2="table_base_link" reason="Adjacent"/>
+    <disable_collisions link1="camera_holder_link" link2="forearm_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="kinect_link" reason="Adjacent"/>
+    <disable_collisions link1="camera_holder_link" link2="man_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="shoulder_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="table_base_link" reason="Adjacent"/>
+    <disable_collisions link1="camera_holder_link" link2="upperarm_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="wrist1_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="wrist2_link" reason="Never"/>
+    <disable_collisions link1="camera_holder_link" link2="wrist3_link" reason="Never"/>
+    <disable_collisions link1="forearm_link" link2="kinect_link" reason="Never"/>
+    <disable_collisions link1="forearm_link" link2="upperarm_link" reason="Adjacent"/>
+    <disable_collisions link1="forearm_link" link2="wrist1_link" reason="Adjacent"/>
+    <disable_collisions link1="forearm_link" link2="wrist2_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="man_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="probe_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="shoulder_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="table_base_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="upperarm_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="upperprobe_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="wrist1_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="wrist2_link" reason="Never"/>
+    <disable_collisions link1="kinect_link" link2="wrist3_link" reason="Never"/>
+    <disable_collisions link1="man_link" link2="shoulder_link" reason="Never"/>
+    <disable_collisions link1="man_link" link2="table_base_link" reason="Never"/>
+    <disable_collisions link1="probe_link" link2="upperprobe_link" reason="Adjacent"/>
+    <disable_collisions link1="probe_link" link2="wrist1_link" reason="Never"/>
+    <disable_collisions link1="probe_link" link2="wrist2_link" reason="Never"/>
+    <disable_collisions link1="probe_link" link2="wrist3_link" reason="Never"/>
+    <disable_collisions link1="shoulder_link" link2="table_base_link" reason="Never"/>
+    <disable_collisions link1="shoulder_link" link2="upperarm_link" reason="Adjacent"/>
+    <disable_collisions link1="upperprobe_link" link2="wrist1_link" reason="Never"/>
+    <disable_collisions link1="upperprobe_link" link2="wrist2_link" reason="Never"/>
+    <disable_collisions link1="upperprobe_link" link2="wrist3_link" reason="Adjacent"/>
+    <disable_collisions link1="wrist1_link" link2="wrist2_link" reason="Adjacent"/>
+    <disable_collisions link1="wrist1_link" link2="wrist3_link" reason="Never"/>
+    <disable_collisions link1="wrist2_link" link2="wrist3_link" reason="Adjacent"/>
+</robot>

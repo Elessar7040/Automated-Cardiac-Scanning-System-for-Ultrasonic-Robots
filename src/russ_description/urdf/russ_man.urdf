@@ -5,23 +5,23 @@
 <robot name="russ">
   <link name="table_base_link">
     <inertial>
-      <origin xyz="8.38237408928855E-08 0.206103274520293 0.463276051921847" rpy="0 0 0" />
-      <mass value="309.143354179708" />
-      <inertia ixx="20.3943452014122" ixy="6.26686219975331E-06" ixz="5.01704867174039E-06" iyy="26.0520889270766" iyz="-2.88934452540239" izz="22.1482784260504" />
+      <origin xyz="8.3824E-08 0.2061 0.46328" rpy="0 0 0" />
+      <mass value="309.14" />
+      <inertia ixx="20.394" ixy="6.2669E-06" ixz="5.017E-06" iyy="26.052" iyz="-2.8893" izz="22.148" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/base_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/base_link.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        <color rgba="0.89804 0.91765 0.92941 1" />
       </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/base_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -35,12 +35,12 @@
     <inertial>
       <origin xyz="-1.3323E-15 -2.2204E-16 -0.086988" rpy="0 0 0" />
       <mass value="429.6" />
-      <inertia ixx="25.702" ixy="-0.00012352" ixz="-1.3711E-13" iyy="178.76" iyz="-3.3916E-14" izz="193.28" />
+      <inertia ixx="25.702" ixy="-0.00012352" ixz="-1.3576E-13" iyy="178.76" iyz="-3.412E-14" izz="193.28" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/bed_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/bed_link.STL" />
       </geometry>
       <material name="">
         <color rgba="0.89804 0.91765 0.92941 1" />
@@ -49,7 +49,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/bed_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/bed_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -59,72 +59,100 @@
     <child link="bed_link" />
     <axis xyz="0 0 0" />
   </joint>
-  <link name="camera_holder_link">
+  <link name="man_link">
     <inertial>
-      <origin xyz="0.44034 -4.5935E-15 0.6983" rpy="0 0 0" />
-      <mass value="10.767" />
-      <inertia ixx="2.1559" ixy="-4.985E-09" ixz="-1.2306" iyy="2.8448" iyz="2.8781E-09" izz="0.76073" />
+      <origin xyz="-0.30355 0.067768 -0.10155" rpy="0 0 0" />
+      <mass value="58.24" />
+      <inertia ixx="0.70293" ixy="-0.0028572" ixz="-0.12719" iyy="8.0235" iyz="0.0098368" izz="8.4669" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/camera_holder_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/man_link.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.89804 0.91765 0.92941 1" />
+        <color rgba="1 1 1 1" />
       </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/camera_holder_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/man_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="man_joint" type="fixed">
+    <origin xyz="0.466 -0.074751 0.19344" rpy="0 0 0" />
+    <parent link="bed_link" />
+    <child link="man_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  <link name="camera_holder_link">
+    <inertial>
+      <origin xyz="0.440336125387075 -4.63518112781003E-15 0.698295733445473" rpy="0 0 0" />
+      <mass value="10.7674813244167" />
+      <inertia ixx="2.15585909806283" ixy="-4.98500136345296E-09" ixz="-1.23059570236083" iyy="2.84481281645542" iyz="2.87810900583756E-09" izz="0.760734918429647" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://russ_description/meshes/man/camera_holder_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://russ_description/meshes/man/camera_holder_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="camera_holder_joint" type="fixed">
-    <origin xyz="0 1.3832 1.4643" rpy="3.1416 0.5236 1.5708" />
+    <origin xyz="0 1.3665 1.4643" rpy="3.1416 0.5236 1.5708" />
     <parent link="table_base_link" />
     <child link="camera_holder_link" />
     <axis xyz="0 0 0" />
   </joint>
   <link name="kinect_link">
     <inertial>
-      <origin xyz="0.0070113 0.0024111 -0.00023078" rpy="0 0 1.5708" />
+      <origin xyz="0.0052461 0.00054533 -0.0069613" rpy="0 0 0" />
       <mass value="0.64645" />
-      <inertia ixx="0.0029627" ixy="3.4581E-08" ixz="-1.4774E-07" iyy="0.00026363" iyz="-2.566E-06" izz="0.0028425" />
+      <inertia ixx="0.0028425" ixy="-2.566E-06" ixz="1.4774E-07" iyy="0.00026363" iyz="-3.4581E-08" izz="0.0029627" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.5708" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/kinect.dae" />
+        <mesh filename="package://russ_description/meshes/man/camera_link.STL" />
       </geometry>
       <material name="">
         <color rgba="0.79216 0.81961 0.93333 1" />
       </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 1.5708" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/camera_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/camera_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="kinect_joint" type="fixed">
-    <origin xyz="-0.05355 -0.0021296 0.016187" rpy="0 -1.5708 0" />
+    <origin xyz="-0.0535 -0.00026386 0.011407" rpy="-1.8978 -1.5708 1.9025" />
     <parent link="camera_holder_link" />
     <child link="kinect_link" />
     <axis xyz="0 0 0" />
   </joint>
   <link name="base_link">
     <inertial>
-      <origin xyz="-1.4294E-05 -0.038283 0.056106" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <mass value="4" />
-      <inertia ixx="0.0016928" ixy="-1.142E-07" ixz="-5.6886E-07" iyy="0.0012525" iyz="-2.3851E-05" izz="0.0020811" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/base.dae" />
+        <mesh filename="package://russ_description/meshes/man/base.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -133,26 +161,26 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/arm_base_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/arm_base_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="base_joint" type="fixed">
-    <origin xyz="0 0.37 0.7002" rpy="0 0 0" />
+    <origin xyz="0 0.37 0.7" rpy="0 0 0" />
     <parent link="table_base_link" />
     <child link="base_link" />
     <axis xyz="0 0 0" />
   </joint>
   <link name="shoulder_link">
     <inertial>
-      <origin xyz="-3.5623E-06 0.010909 0.00011678" rpy="0 0 0" />
+      <origin xyz="3.5038E-06 0.010909 0.00011678" rpy="0 0 0" />
       <mass value="3.7" />
-      <inertia ixx="0.0039246" ixy="-4.6692E-08" ixz="4.0132E-08" iyy="0.0034476" iyz="-9.4718E-05" izz="0.0033425" />
+      <inertia ixx="0.0039246" ixy="-4.6783E-08" ixz="4.0132E-08" iyy="0.0034476" iyz="-9.4718E-05" izz="0.0033425" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/shoulder.dae" />
+        <mesh filename="package://russ_description/meshes/man/shoulder.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -161,28 +189,28 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/shoulder_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/shoulder_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="shoulder_joint" type="revolute">
-    <origin xyz="0 0 0.1623" rpy="0 0 0" />
+    <origin xyz="0 0 0.1625" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="shoulder_link" />
     <axis xyz="0 0 1" />
-    <limit lower="-3.14159265" upper="3.14159265" effort="150" velocity="3.15" />
+    <limit lower="-3.1416" upper="3.1416" effort="150" velocity="3.15" />
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="upperarm_link">
     <inertial>
-      <origin xyz="-6.0796E-06 0.00010671 0.2125" rpy="0 0 0" />
+      <origin xyz="6.977E-06 0.00010671 0.2125" rpy="0 0 0" />
       <mass value="8.393" />
-      <inertia ixx="0.14144" ixy="1.9187E-07" ixz="1.2829E-06" iyy="0.14028" iyz="-4.607E-07" izz="0.007421" />
+      <inertia ixx="0.14144" ixy="1.9188E-07" ixz="1.2835E-06" iyy="0.14028" iyz="-4.606E-07" izz="0.007421" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/upperarm.dae" />
+        <mesh filename="package://russ_description/meshes/man/upperarm.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -191,7 +219,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/upperarm_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/upperarm_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -200,19 +228,19 @@
     <parent link="shoulder_link" />
     <child link="upperarm_link" />
     <axis xyz="0 1 0" />
-    <limit lower="-3.14159265" upper="3.14159265" effort="150" velocity="3.15" />
+    <limit lower="-3.1416" upper="3.1416" effort="150" velocity="3.15" />
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="forearm_link">
     <inertial>
-      <origin xyz="-2.2953E-05 0.010608 0.14792" rpy="0 0 0" />
+      <origin xyz="-2.2956E-05 0.010608 0.14792" rpy="0 0 0" />
       <mass value="2.275" />
-      <inertia ixx="0.053639" ixy="1.0574E-05" ixz="-9.1443E-06" iyy="0.053127" iyz="0.0035172" izz="0.0026829" />
+      <inertia ixx="0.053639" ixy="1.0574E-05" ixz="-9.1444E-06" iyy="0.053127" iyz="0.0035172" izz="0.0026829" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/forearm.dae" />
+        <mesh filename="package://russ_description/meshes/man/forearm.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -221,7 +249,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/forearm_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/forearm_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -230,19 +258,19 @@
     <parent link="upperarm_link" />
     <child link="forearm_link" />
     <axis xyz="0 1 0" />
-    <limit lower="-3.14159265" upper="3.14159265" effort="150" velocity="3.15" />
+    <limit lower="-3.1416" upper="3.1416" effort="150" velocity="3.15" />
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="wrist1_link">
     <inertial>
-      <origin xyz="-8.348E-06 0.10839 -0.002548" rpy="0 0 0" />
+      <origin xyz="-8.3494E-06 0.10839 -0.002548" rpy="0 0 0" />
       <mass value="1.219" />
       <inertia ixx="0.0010919" ixy="2.8181E-07" ixz="-1.116E-07" iyy="0.00068611" iyz="2.5893E-05" izz="0.00088473" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist1.dae" />
+        <mesh filename="package://russ_description/meshes/man/wrist1.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -251,7 +279,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist1_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/wrist1_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -260,19 +288,19 @@
     <parent link="forearm_link" />
     <child link="wrist1_link" />
     <axis xyz="0 1 0" />
-    <limit lower="-3.14159265" upper="3.14159265" effort="28" velocity="3.2" />
+    <limit lower="-3.1416" upper="3.1416" effort="28" velocity="3.2" />
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="wrist2_link">
     <inertial>
-      <origin xyz="8.9592E-06 -0.00311 0.092148" rpy="0 0 0" />
+      <origin xyz="8.9598E-06 -0.00311 0.092148" rpy="0 0 0" />
       <mass value="1.219" />
-      <inertia ixx="0.00069812" ixy="1.1121E-07" ixz="-2.3236E-07" iyy="0.00049175" iyz="7.5563E-06" izz="0.00060119" />
+      <inertia ixx="0.00069812" ixy="1.1122E-07" ixz="-2.3236E-07" iyy="0.00049175" iyz="7.5563E-06" izz="0.00060119" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist2.dae" />
+        <mesh filename="package://russ_description/meshes/man/wrist2.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -281,7 +309,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist2_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/wrist2_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -290,19 +318,19 @@
     <parent link="wrist1_link" />
     <child link="wrist2_link" />
     <axis xyz="0 0 1" />
-    <limit lower="-3.14159265" upper="3.14159265" effort="28" velocity="3.2" />
+    <limit lower="-3.1416" upper="3.1416" effort="28" velocity="3.2" />
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="wrist3_link">
     <inertial>
-      <origin xyz="-7.0404E-10 0.075061 -1.5938E-05" rpy="0 0 0" />
+      <origin xyz="-2.1553E-09 0.075061 -1.5939E-05" rpy="0 0 0" />
       <mass value="0.1879" />
-      <inertia ixx="0.00012784" ixy="8.6493E-12" ixz="-2.7362E-09" iyy="0.00016475" iyz="-1.6101E-07" izz="0.00012855" />
+      <inertia ixx="0.00012784" ixy="8.6493E-12" ixz="-2.7362E-09" iyy="0.00016475" iyz="-1.6102E-07" izz="0.00012855" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist3.dae" />
+        <mesh filename="package://russ_description/meshes/man/wrist3.dae" />
       </geometry>
       <material name="">
         <color rgba="1 1 1 1" />
@@ -311,7 +339,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/wrist3_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/wrist3_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -323,31 +351,59 @@
     <limit lower="-3.1416" upper="3.1416" effort="28" velocity="3.2" />
     <dynamics damping="0" friction="0" />
   </joint>
-  <link name="probe_link">
+  <link name="upperprobe_link">
     <inertial>
-      <origin xyz="-8.8458E-05 -0.067338 8.8555E-05" rpy="0 0 0" />
-      <mass value="0.31983" />
-      <inertia ixx="0.00065295" ixy="1.2816E-06" ixz="-1.8903E-05" iyy="0.00013543" iyz="-1.2806E-06" izz="0.00065295" />
+      <origin xyz="-6.63458796418825E-05 0.0870563931078425 6.63349804452817E-05" rpy="0 0 0" />
+      <mass value="0.29224119341871" />
+      <inertia ixx="0.000539961437048322" ixy="8.57640660432055E-07" ixz="-1.68597761634735E-05" iyy="0.000122878958889507" iyz="-8.56331344497876E-07" izz="0.000539963118368424" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/probe_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/upperprobe_link.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.79216 0.81961 0.93333 1" />
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
       </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://russ_description/meshes/no_man/probe_link.STL" />
+        <mesh filename="package://russ_description/meshes/man/upperprobe_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="upperprobe_joint" type="fixed">
+    <origin xyz="0 0.1086 0" rpy="0 0 0" />
+    <parent link="wrist3_link" />
+    <child link="upperprobe_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  <link name="probe_link">
+    <inertial>
+      <origin xyz="-0.000325357010050917 -0.00796680505131175 0.000325397027811647" rpy="0 0 0" />
+      <mass value="0.0275873695177772" />
+      <inertia ixx="6.56286772751349E-06" ixy="-5.48238728667042E-11" ixz="-2.04472096416803E-06" iyy="1.25436023819217E-05" iyz="-5.18677191691285E-11" izz="6.56290712583165E-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://russ_description/meshes/man/probe_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://russ_description/meshes/man/probe_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="probe_joint" type="fixed">
-    <origin xyz="0 0.268599999411803 0" rpy="0 0 0" />
-    <parent link="wrist3_link" />
+    <origin xyz="0 0.16 0" rpy="0 0 0" />
+    <parent link="upperprobe_link" />
     <child link="probe_link" />
     <axis xyz="0 0 0" />
   </joint>

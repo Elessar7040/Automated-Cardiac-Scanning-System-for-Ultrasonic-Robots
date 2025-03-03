@@ -12,8 +12,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        *[(os.path.join('share', package_name, os.path.dirname(f)), [f])
-          for f in glob('meshes/*', recursive=True) if os.path.isfile(f)],
+        *[(os.path.join('share', package_name, os.path.dirname(p)), [p])
+          for p in glob('meshes/**/*', recursive=True) if os.path.isfile(p)],
         ('share/' + package_name + '/urdf', glob('urdf/*.urdf')),
         ('share/' + package_name + '/world', glob('world/*.world')),
     ],

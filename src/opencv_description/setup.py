@@ -26,6 +26,7 @@ setup(
             "pointcloud_transform_node_2 = opencv_description.pointcloud_transform_2:main",
             "ik_node = opencv_description.ikine_test_2:main",
             "joint_trajectory_node = opencv_description.joint_trajectory_test_1:main",
+            'open3d_normals = opencv_description.open3d_normals:main',
         ],
     },
 )
