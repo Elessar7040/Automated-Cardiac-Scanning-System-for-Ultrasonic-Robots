@@ -45,6 +45,14 @@ titles = ['Planning Time (s)', 'Path Length (m)', 'Joint Movement (rad)', 'Smoot
 
 # 绘制折线图
 for i, (metric, title) in enumerate(zip(metrics, titles)):
+    # 计算当前指标的最大值和最小值
+    all_values = []
+    for data in rrt_data + bitrrt_data:
+        all_values.extend(data[metric])
+    y_min = min(all_values)
+    # y_min = 0
+    y_max = max(all_values)
+    
     # RRTConnect
     ax = axes[i, 0]
     for j in range(len(rrt_data)):
@@ -52,8 +60,9 @@ for i, (metric, title) in enumerate(zip(metrics, titles)):
     ax.set_title(f'RRTConnect - {title}')
     ax.set_xlabel('Position')
     ax.set_ylabel(title)
+    ax.set_ylim(y_min, y_max)  # 设置y轴范围
     ax.grid(True)
-    ax.legend()
+    ax.legend(loc='upper right')  # 指定图例位置在右上角
 
     # BiTRRT
     ax = axes[i, 1]
@@ -62,8 +71,9 @@ for i, (metric, title) in enumerate(zip(metrics, titles)):
     ax.set_title(f'BiTRRT - {title}')
     ax.set_xlabel('Position')
     ax.set_ylabel(title)
+    ax.set_ylim(y_min, y_max)  # 设置相同的y轴范围
     ax.grid(True)
-    ax.legend()
+    ax.legend(loc='upper right')  # 指定图例位置在右上角
 
 plt.tight_layout()
 plt.savefig('src/planning_node/test_results/comparison_lines.png')
