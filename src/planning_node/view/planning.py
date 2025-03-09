@@ -57,23 +57,25 @@ for i, (metric, title) in enumerate(zip(metrics, titles)):
     ax = axes[i, 0]
     for j in range(len(rrt_data)):
         ax.plot(rrt_data[j][metric], label=f'Test {j+1}')
-    ax.set_title(f'RRTConnect - {title}')
-    ax.set_xlabel('Position')
-    ax.set_ylabel(title)
+    ax.set_title(f'RRTConnect - {title}', fontsize=16)
+    ax.set_xlabel('Position', fontsize=16)
+    ax.set_ylabel(title, fontsize=16)
+    ax.tick_params(axis='both', labelsize=16)  # 设置刻度字体大小
     ax.set_ylim(y_min, y_max)  # 设置y轴范围
     ax.grid(True)
-    ax.legend(loc='upper right')  # 指定图例位置在右上角
+    ax.legend(loc='upper right', fontsize=16)  # 指定图例位置在右上角
 
     # BiTRRT
     ax = axes[i, 1]
     for j in range(len(bitrrt_data)):
         ax.plot(bitrrt_data[j][metric], label=f'Test {j+1}')
-    ax.set_title(f'BiTRRT - {title}')
-    ax.set_xlabel('Position')
-    ax.set_ylabel(title)
+    ax.set_title(f'BiTRRT - {title}', fontsize=16)
+    ax.set_xlabel('Position', fontsize=16)
+    ax.set_ylabel(title, fontsize=16)
+    ax.tick_params(axis='both', labelsize=16)  # 设置刻度字体大小
     ax.set_ylim(y_min, y_max)  # 设置相同的y轴范围
     ax.grid(True)
-    ax.legend(loc='upper right')  # 指定图例位置在右上角
+    ax.legend(loc='upper right', fontsize=16)  # 指定图例位置在右上角
 
 plt.tight_layout()
 plt.savefig('src/planning_node/test_results/comparison_lines.png')
@@ -108,16 +110,17 @@ plt.bar(x - width/2, list(rrt_means.values()), width, label='RRTConnect', color=
 plt.bar(x + width/2, list(bitrrt_means.values()), width, label='BiTRRT', color='lightcoral')
 
 # 设置图表属性
-plt.ylabel('Values')
-plt.title('Average Metrics Comparison')
-plt.xticks(x, titles)
-plt.legend()
+plt.ylabel('Values', fontsize=16)
+plt.title('Average Metrics Comparison', fontsize=16)
+plt.xticks(x, titles, fontsize=16)
+plt.yticks(fontsize=16)  # 设置y轴刻度字体大小
+plt.legend(fontsize=16)
 
 # 在柱子上添加数值标签
 for i, v in enumerate(list(rrt_means.values())):
-    plt.text(i - width/2, v, f'{v:.3f}', ha='center', va='bottom')
+    plt.text(i - width/2, v, f'{v:.3f}', ha='center', va='bottom', fontsize=16)
 for i, v in enumerate(list(bitrrt_means.values())):
-    plt.text(i + width/2, v, f'{v:.3f}', ha='center', va='bottom')
+    plt.text(i + width/2, v, f'{v:.3f}', ha='center', va='bottom', fontsize=16)
 
 plt.tight_layout()
 plt.savefig('src/planning_node/test_results/comparison_bars.png')
