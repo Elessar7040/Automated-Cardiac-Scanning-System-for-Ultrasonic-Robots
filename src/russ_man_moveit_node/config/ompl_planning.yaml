@@ -8,11 +8,6 @@ request_adapters: >-
   default_planner_request_adapters/FixStartStatePathConstraints
 
 russ_group:
-  default_collision_pairs:
-    - link1: man_link
-      link2: probe_link
-      disable_collision: true
-
   planner_configs:
     - RRTConnect  # 双向快速随机树
     - TRRT        # Transition-based RRT，考虑代价的RRT变体

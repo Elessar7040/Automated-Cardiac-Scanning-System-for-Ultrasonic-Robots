@@ -228,9 +228,9 @@
     <parent link="shoulder_link" />
     <child link="upperarm_link" />
     <axis xyz="0 1 0" />
-    <!-- <limit lower="-3.1416" upper="3.1416" effort="150" velocity="3.15" /> -->
+    <limit lower="-3.1416" upper="3.1416" effort="150" velocity="3.15" />
     <!-- 1.4137rad = 81° -->
-    <limit lower="-1.4137" upper="1.4137" effort="150" velocity="3.15" />
+    <!-- <limit lower="-1.4137" upper="1.4137" effort="150" velocity="3.15" /> -->
     <dynamics damping="0" friction="0" />
   </joint>
   <link name="forearm_link">

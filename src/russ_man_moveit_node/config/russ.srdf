@@ -21,7 +21,7 @@
     <disable_collisions link1="base_link" link2="table_base_link" reason="Adjacent"/>
     <disable_collisions link1="bed_link" link2="camera_holder_link" reason="Never"/>
     <disable_collisions link1="bed_link" link2="kinect_link" reason="Never"/>
-    <!-- <disable_collisions link1="bed_link" link2="man_link" reason="Adjacent"/> -->
+    <disable_collisions link1="bed_link" link2="man_link" reason="Adjacent"/>
     <disable_collisions link1="bed_link" link2="shoulder_link" reason="Never"/>
     <disable_collisions link1="bed_link" link2="table_base_link" reason="Adjacent"/>
     <disable_collisions link1="camera_holder_link" link2="forearm_link" reason="Never"/>
@@ -48,12 +48,7 @@
     <disable_collisions link1="kinect_link" link2="wrist3_link" reason="Never"/>
     <disable_collisions link1="man_link" link2="shoulder_link" reason="Never"/>
     <disable_collisions link1="man_link" link2="table_base_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="forearm_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="upperarm_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="wrist1_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="wrist2_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="wrist3_link" reason="Never"/>
-    <disable_collisions link1="man_link" link2="upperprobe_link" reason="Never"/>
+    <disable_collisions link1="man_link" link2="probe_link" reason="Never"/>
     <disable_collisions link1="probe_link" link2="upperprobe_link" reason="Adjacent"/>
     <disable_collisions link1="probe_link" link2="wrist1_link" reason="Never"/>
     <disable_collisions link1="probe_link" link2="wrist2_link" reason="Never"/>

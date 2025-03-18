@@ -15,7 +15,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("russ", package_name="russ_moveit_node").to_moveit_configs() # 之前不知道为什么写错了，现在修改过来了。 20230612，感谢评论区的指正。
+    moveit_config = MoveItConfigsBuilder("russ", package_name="russ_man_moveit_node").to_moveit_configs() # 之前不知道为什么写错了，现在修改过来了。 20230612，感谢评论区的指正。
 
     ld = LaunchDescription()
 

@@ -18,8 +18,8 @@ moveit_simple_controller_manager:
       - wrist2_joint
       - wrist3_joint
 
-collision_check:
-  acm_override_pairs:
-    - object1: man_link
-      object2: probe_link
-      allowed: true
+# collision_check:
+#   acm_override_pairs:
+#     - object1: man_link
+#       object2: probe_link
+#       allowed: true

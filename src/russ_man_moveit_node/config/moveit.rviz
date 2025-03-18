@@ -15,7 +15,7 @@ Visualization Manager:
       Value: true
     - Class: rviz_default_plugins/TF
       Name: TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: false
