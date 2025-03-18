@@ -129,7 +129,7 @@ private:
             if (!move_group_) {
                 move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
                     shared_from_this(), goal->arm_id);
-                move_group_->setPlannerId("RRTConnect");
+                move_group_->setPlannerId("BiTRRT");
             }
 
             // 配置MoveGroup参数

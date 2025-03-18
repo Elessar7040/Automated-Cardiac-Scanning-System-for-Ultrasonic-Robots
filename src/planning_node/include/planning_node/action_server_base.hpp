@@ -49,9 +49,9 @@ protected:
         std::lock_guard<std::mutex> lock(planning_mutex_);
         
         if (obstacle_avoidance_enabled_) {
-            move_group->setPlannerId("RRTConnect");
+            move_group->setPlannerId("BiTRRT");
         } else {
-            move_group->setPlannerId("RRTConnect");
+            move_group->setPlannerId("BiTRRT");
             move_group->clearPathConstraints();
         }
 

@@ -85,6 +85,9 @@ add_executable(waypoint_action_server
 add_executable(waypoint_action_client_test
   test/waypoint_action_client_test.cpp
 )
+add_executable(waypoint_action_client_test_2
+  test/waypoint_action_client_test_2.cpp
+)
 add_executable(match_point_converter
   src/match_point_converter.cpp
 )
@@ -173,6 +176,10 @@ ament_target_dependencies(waypoint_action_client_test
   rclcpp
   rclcpp_action
 )
+ament_target_dependencies(waypoint_action_client_test_2
+  rclcpp
+  rclcpp_action
+)
 ament_target_dependencies(match_point_converter
   rclcpp
   geometry_msgs
@@ -203,6 +210,9 @@ target_link_libraries(waypoint_action_server
 target_link_libraries(waypoint_action_client_test 
   "${cpp_typesupport_target}"
 )
+target_link_libraries(waypoint_action_client_test_2 
+  "${cpp_typesupport_target}"
+)
 
 install(TARGETS
   moveit_cartesian_test_2
@@ -217,6 +227,7 @@ install(TARGETS
   cartesian_rel_action_client_test
   waypoint_action_server
   waypoint_action_client_test
+  waypoint_action_client_test_2
   match_point_converter
   ik_planning_test
   DESTINATION lib/${PROJECT_NAME}

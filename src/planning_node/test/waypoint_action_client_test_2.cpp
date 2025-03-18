@@ -86,53 +86,115 @@ public:
         std::vector<planning_node::msg::Waypoint> waypoints;
 
         // man_link原点坐标: 0.066; 0.79525; 0.79344
+        // -0.70236; 0.003093; 3.1671e-06; 0.71182
         
         // 初始点
         planning_node::msg::Waypoint init_point;
         init_point.waypoint_type = planning_node::msg::Waypoint::TYPE_INIT;
         init_point.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
-        init_point.waypoint_pose.position.x = 0.5;
-        init_point.waypoint_pose.position.y = 0.0;
-        init_point.waypoint_pose.position.z = 0.5;
-        init_point.waypoint_pose.orientation.w = 1.0;
+        init_point.waypoint_pose.position.x = 0.1;
+        init_point.waypoint_pose.position.y = 0.7;
+        init_point.waypoint_pose.position.z = 1.2;
+        // init_point.waypoint_pose.orientation.w = 1.0;
+        init_point.waypoint_pose.orientation.x = 0.7071068;
+        init_point.waypoint_pose.orientation.y = 0.0;
+        init_point.waypoint_pose.orientation.z = 0.0;
+        init_point.waypoint_pose.orientation.w = -0.7071068;
         init_point.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_STOP;
         waypoints.push_back(init_point);
 
-        // 工作点1 - 取料位置
+        // 工作点0 - 原点
+        planning_node::msg::Waypoint work_point0;
+        work_point0.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
+        work_point0.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
+        work_point0.waypoint_pose.position.x = 0.07;
+        work_point0.waypoint_pose.position.y = 0.8;
+        work_point0.waypoint_pose.position.z = 0.9;
+        work_point0.waypoint_pose.orientation.x = 0.7071068;
+        work_point0.waypoint_pose.orientation.y = 0.0;
+        work_point0.waypoint_pose.orientation.z = 0.0;
+        work_point0.waypoint_pose.orientation.w = -0.7071068;
+        work_point0.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_SMOOTH;
+        work_point0.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
+        work_point0.end_effector_type = planning_node::msg::Waypoint::END_SUCTION;
+        work_point0.end_effector_action = 1.0; // 开启吸盘
+        waypoints.push_back(work_point0);
+
+        // 工作点1 - 上点
         planning_node::msg::Waypoint work_point1;
         work_point1.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
         work_point1.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
-        work_point1.waypoint_pose.position.x = 0.5;
-        work_point1.waypoint_pose.position.y = 0.0;
-        work_point1.waypoint_pose.position.z = 0.7;
-        work_point1.waypoint_pose.orientation.w = 1.0;
+        work_point1.waypoint_pose.position.x = 0.09;
+        work_point1.waypoint_pose.position.y = 0.8;
+        work_point1.waypoint_pose.position.z = 0.82;
+        work_point1.waypoint_pose.orientation.x = 0.7071068;
+        work_point1.waypoint_pose.orientation.y = 0.0;
+        work_point1.waypoint_pose.orientation.z = 0.0;
+        work_point1.waypoint_pose.orientation.w = -0.7071068;
         work_point1.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_SMOOTH;
         work_point1.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
         work_point1.end_effector_type = planning_node::msg::Waypoint::END_SUCTION;
         work_point1.end_effector_action = 1.0;  // 开启吸盘
         waypoints.push_back(work_point1);
 
-        // 工作点2 - 放料位置
+        // 工作点2 - 右点
         planning_node::msg::Waypoint work_point2;
         work_point2.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
         work_point2.waypoint_mode = planning_node::msg::Waypoint::MODE_UNLOAD;
-        work_point2.waypoint_pose.position.x = 0.5;
-        work_point2.waypoint_pose.position.y = 0.2;
-        work_point2.waypoint_pose.position.z = 0.7;
-        work_point2.waypoint_pose.orientation.w = 1.0;
+        work_point2.waypoint_pose.position.x = 0.06;
+        work_point2.waypoint_pose.position.y = 0.8;
+        work_point2.waypoint_pose.position.z = 0.80;
+        work_point2.waypoint_pose.orientation.x = 0.7071068;
+        work_point2.waypoint_pose.orientation.y = 0.0;
+        work_point2.waypoint_pose.orientation.z = 0.0;
+        work_point2.waypoint_pose.orientation.w = -0.7071068;
         work_point2.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_FORCE;
         work_point2.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
         work_point2.end_effector_type = planning_node::msg::Waypoint::END_SUCTION;
         work_point2.end_effector_action = 0.0;  // 关闭吸盘
         waypoints.push_back(work_point2);
 
+        // 工作点3 - 下点
+        planning_node::msg::Waypoint work_point3;
+        work_point3.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
+        work_point3.waypoint_mode = planning_node::msg::Waypoint::MODE_UNLOAD;
+        work_point3.waypoint_pose.position.x = 0.04;
+        work_point3.waypoint_pose.position.y = 0.8;
+        work_point3.waypoint_pose.position.z = 0.80;
+        work_point3.waypoint_pose.orientation.x = 0.7071068;
+        work_point3.waypoint_pose.orientation.y = 0.0;
+        work_point3.waypoint_pose.orientation.z = 0.0;
+        work_point3.waypoint_pose.orientation.w = -0.7071068;
+        work_point3.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_FORCE;
+        work_point3.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
+        work_point3.end_effector_type = planning_node::msg::Waypoint::END_SUCTION;
+        work_point3.end_effector_action = 0.0; // 关闭吸盘
+        waypoints.push_back(work_point3);
+
+        // 工作点4 - 左点
+        planning_node::msg::Waypoint work_point4;
+        work_point4.waypoint_type = planning_node::msg::Waypoint::TYPE_WORK;
+        work_point4.waypoint_mode = planning_node::msg::Waypoint::MODE_UNLOAD;
+        work_point4.waypoint_pose.position.x = 0.06;
+        work_point4.waypoint_pose.position.y = 0.8;
+        work_point4.waypoint_pose.position.z = 0.79;
+        work_point4.waypoint_pose.orientation.x = 0.7071068;
+        work_point4.waypoint_pose.orientation.y = 0.0;
+        work_point4.waypoint_pose.orientation.z = 0.0;
+        work_point4.waypoint_pose.orientation.w = -0.7071068;
+        work_point4.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_FORCE;
+        work_point4.action_type = planning_node::msg::Waypoint::ACTION_END_CONTROL;
+        work_point4.end_effector_type = planning_node::msg::Waypoint::END_SUCTION;
+        work_point4.end_effector_action = 0.0; // 关闭吸盘
+        waypoints.push_back(work_point4);
+
         // 结束点
         planning_node::msg::Waypoint end_point;
         end_point.waypoint_type = planning_node::msg::Waypoint::TYPE_END;
         end_point.waypoint_mode = planning_node::msg::Waypoint::MODE_PICK;
         end_point.waypoint_pose.position.x = 0.5;
-        end_point.waypoint_pose.position.y = 0.1;
-        end_point.waypoint_pose.position.z = 0.5;
+        end_point.waypoint_pose.position.y = 0.7;
+        end_point.waypoint_pose.position.z = 1.1;
         end_point.waypoint_pose.orientation.w = 1.0;
         end_point.waypoint_plan_mode = planning_node::msg::Waypoint::PLAN_STOP;
         waypoints.push_back(end_point);

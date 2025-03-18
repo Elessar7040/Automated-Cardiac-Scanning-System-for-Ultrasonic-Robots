@@ -13,6 +13,17 @@ Visualization Manager:
     - Class: rviz_default_plugins/Grid
       Name: Grid
       Value: true
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+      Marker Scale: 1
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Value: true
     - Class: moveit_rviz_plugin/MotionPlanning
       Name: MotionPlanning
       Planned Path:
