@@ -4,12 +4,12 @@ import torch.multiprocessing as mp
 def main():
     # Load a model
     # 不包含无标注图片
-    # model = YOLO(r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\train\exp2\weights\best.pt')
+    # model = YOLO(r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/train/exp2/weights/best.pt')
     # 包含无标注图片
     # 100 epoch
-    model = YOLO(r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\train\exp3\weights\best.pt')
+    model = YOLO(r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/train/exp3/weights/best.pt')
     # 150 epoch
-    # model = YOLO(r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\train\exp4\weights\best.pt')
+    # model = YOLO(r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/train/exp4/weights/best.pt')
     
     # Validate the model
     # metrics = model.val(data="data_labeled.yaml")

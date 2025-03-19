@@ -98,15 +98,15 @@ def compare_videos(video1_path, video2_path):
 
 if __name__ == '__main__':
     # 设置视频路径
-    # video1_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict14\Cardiac_15.avi'   # 替换为您的第一个视频路径
-    # video2_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict18\Cardiac_15.avi'  # 替换为您的第二个视频路径
+    # video1_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict14/Cardiac_15.avi'   # 替换为您的第一个视频路径
+    # video2_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict18/Cardiac_15.avi'  # 替换为您的第二个视频路径
     
-    # video1_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict14\Cardiac_15.avi'   # 替换为您的第一个视频路径
-    # video2_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict19\Cardiac_15.avi'  # 替换为您的第二个视频路径
+    # video1_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict14/Cardiac_15.avi'   # 替换为您的第一个视频路径
+    # video2_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict19/Cardiac_15.avi'  # 替换为您的第二个视频路径
     
 
-    video1_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict18\Cardiac_15.avi'   # 替换为您的第一个视频路径
-    video2_path = r'E:\YOLO\YOLO11\Projects\cardiac_ultrasound\runs\detect\predict19\Cardiac_15.avi'  # 替换为您的第二个视频路径
+    video1_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict18/Cardiac_15.avi'   # 替换为您的第一个视频路径
+    video2_path = r'/home/elessar/russ_ws/ws7/src/yolo_node/yolo_node/runs/detect/predict19/Cardiac_15.avi'  # 替换为您的第二个视频路径
     
     # 开始比较
     compare_videos(video1_path, video2_path)
