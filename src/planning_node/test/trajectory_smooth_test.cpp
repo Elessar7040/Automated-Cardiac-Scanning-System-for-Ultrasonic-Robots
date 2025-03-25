@@ -565,7 +565,7 @@ public:
         }
 
         // 保存平均值
-        csv_file << "\n平均值:\n";
+        csv_file << "\nStatistics:\n";
         csv_file << ",Method,Planning Time (s),Smoothing Time (s),Total Time (s),Path Length (m),Joint Movement (rad),Smoothness,Waypoint Count\n";
         
         for (const auto &method_pair : {
