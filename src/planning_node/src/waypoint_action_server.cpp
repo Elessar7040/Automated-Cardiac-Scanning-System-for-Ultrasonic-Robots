@@ -28,6 +28,9 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <functional>
 #include "end_control_node/srv/end_control.hpp"
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
+#include <moveit/trajectory_processing/time_optimal_trajectory_generation.h>
+#include <unsupported/Eigen/Splines>
 
 class WaypointActionServer : public ActionServerBase
 {
@@ -177,6 +180,47 @@ private:
         }
     }
 
+    bool execute_waypoint(const planning_node::msg::Waypoint &waypoint)
+    {
+        try
+        {
+            // 执行运动
+            if (!move_to_target(waypoint.waypoint_pose))
+            {
+                return false;
+            }
+
+            // 处理末端执行器动作
+            if (waypoint.action_type == planning_node::msg::Waypoint::ACTION_END_CONTROL)
+            {
+                if (waypoint.end_effector_type == planning_node::msg::Waypoint::END_SUCTION)
+                {
+                    auto request = std::make_shared<end_control_node::srv::EndControl::Request>();
+                    request->device_type = request->TYPE_SUCTION;
+                    request->device_id = 1;
+                    request->action = waypoint.end_effector_action;
+                    request->pose = waypoint.waypoint_pose;
+
+                    // 使用同步调用
+                    auto result = end_control_client_->async_send_request(request).get();
+                    if (!result || !result->success)
+                    {
+                        RCLCPP_ERROR(this->get_logger(), "末端控制失败: %s",
+                                     result ? result->message.c_str() : "调用失败");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+        catch (const std::exception &e)
+        {
+            RCLCPP_ERROR(this->get_logger(), "执行航点失败: %s", e.what());
+            return false;
+        }
+    }
+
     bool move_to_target(const geometry_msgs::msg::Pose& target_pose)
     {
         try {
@@ -203,12 +247,12 @@ private:
                 bool plan_success = (plan_result == moveit::core::MoveItErrorCode::SUCCESS);
                 
                 if (plan_success) {
-                    RCLCPP_INFO(this->get_logger(), "规划成功，执行移动");
+                    RCLCPP_INFO(this->get_logger(), "规划成功，执行轨迹");
                     auto execute_result = move_group_->execute(plan);
                     success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
-                    
+                        
                     if (!success) {
-                        RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
+                            RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
                     }
                 } else {
                     RCLCPP_WARN(this->get_logger(), "规划失败，增加容差后重试...");
@@ -248,36 +292,126 @@ private:
         move_group_->setPathConstraints(path_constraints);
     }
 
-    bool execute_waypoint(const planning_node::msg::Waypoint& waypoint)
+    // 在规划后应用平滑
+    bool planAndSmooth(std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group,
+                       moveit::planning_interface::MoveGroupInterface::Plan &plan)
     {
-        try {
-            // 执行运动
-            if (!move_to_target(waypoint.waypoint_pose)) {
-                return false;
+        // 获取规划结果的轨迹
+        robot_trajectory::RobotTrajectory rt(move_group->getRobotModel(), move_group->getName());
+        rt.setRobotTrajectoryMsg(*move_group->getCurrentState(), plan.trajectory_);
+
+        // 应用平滑
+        if (!smoothTrajectory(rt))
+        {
+            return false;
+        }
+
+        // 将平滑后的轨迹转换回计划
+        moveit_msgs::msg::RobotTrajectory trajectory_msg;
+        rt.getRobotTrajectoryMsg(trajectory_msg);
+        plan.trajectory_ = trajectory_msg;
+
+        return true;
+    }
+
+    // MoveIt内置平滑轨迹的方法
+    bool smoothTrajectory(robot_trajectory::RobotTrajectory &trajectory)
+    {
+        try
+        {
+            // 使用时间最优轨迹生成器进行平滑
+            trajectory_processing::TimeOptimalTrajectoryGeneration totg;
+            totg.computeTimeStamps(trajectory, 0.5, 0.5); // 速度和加速度缩放因子
+
+            RCLCPP_INFO(this->get_logger(), "轨迹已平滑处理");
+            return true;
+        }
+        catch (const std::exception &e)
+        {
+            RCLCPP_ERROR(this->get_logger(), "轨迹平滑失败: %s", e.what());
+            return false;
+        }
+    }
+
+    // 使用样条曲线平滑轨迹
+    bool smoothTrajectoryWithSpline(moveit_msgs::msg::RobotTrajectory &trajectory)
+    {
+        try
+        {
+            // 获取轨迹点数量和关节数量
+            size_t num_points = trajectory.joint_trajectory.points.size();
+            size_t num_joints = trajectory.joint_trajectory.joint_names.size();
+
+            if (num_points < 3)
+            {
+                RCLCPP_WARN(this->get_logger(), "轨迹点太少，无法应用样条曲线平滑");
+                return true;
             }
 
-            // 处理末端执行器动作
-            if (waypoint.action_type == planning_node::msg::Waypoint::ACTION_END_CONTROL) {
-                if (waypoint.end_effector_type == planning_node::msg::Waypoint::END_SUCTION) {
-                    auto request = std::make_shared<end_control_node::srv::EndControl::Request>();
-                    request->device_type = request->TYPE_SUCTION;
-                    request->device_id = 1;
-                    request->action = waypoint.end_effector_action;
-                    request->pose = waypoint.waypoint_pose;
+            // 为每个关节创建样条曲线
+            std::vector<Eigen::Spline<double, 1>> splines;
+            splines.reserve(num_joints);
 
-                    // 使用同步调用
-                    auto result = end_control_client_->async_send_request(request).get();
-                    if (!result || !result->success) {
-                        RCLCPP_ERROR(this->get_logger(), "末端控制失败: %s", 
-                            result ? result->message.c_str() : "调用失败");
-                        return false;
-                    }
+            for (size_t joint_idx = 0; joint_idx < num_joints; ++joint_idx)
+            {
+                // 收集关节位置和时间点
+                Eigen::MatrixXd points(2, num_points);
+                for (size_t i = 0; i < num_points; ++i)
+                {
+                    points(0, i) = trajectory.joint_trajectory.points[i].time_from_start.sec +
+                                   trajectory.joint_trajectory.points[i].time_from_start.nanosec / 1e9;
+                    points(1, i) = trajectory.joint_trajectory.points[i].positions[joint_idx];
+                }
+
+                // 创建样条曲线
+                splines.push_back(Eigen::SplineFitting<Eigen::Spline<double, 1>>::Interpolate(
+                    points.row(1), 3, points.row(0)));
+            }
+
+            // 创建新的平滑轨迹
+            moveit_msgs::msg::RobotTrajectory smooth_trajectory = trajectory;
+
+            // 使用更多点重新采样轨迹
+            size_t new_num_points = num_points * 3; // 增加采样点数量
+            smooth_trajectory.joint_trajectory.points.resize(new_num_points);
+
+            double start_time = trajectory.joint_trajectory.points.front().time_from_start.sec +
+                                trajectory.joint_trajectory.points.front().time_from_start.nanosec / 1e9;
+            double end_time = trajectory.joint_trajectory.points.back().time_from_start.sec +
+                              trajectory.joint_trajectory.points.back().time_from_start.nanosec / 1e9;
+
+            for (size_t i = 0; i < new_num_points; ++i)
+            {
+                double t = start_time + (end_time - start_time) * i / (new_num_points - 1);
+
+                // 设置时间
+                smooth_trajectory.joint_trajectory.points[i].time_from_start.sec = static_cast<int32_t>(t);
+                smooth_trajectory.joint_trajectory.points[i].time_from_start.nanosec =
+                    static_cast<uint32_t>((t - static_cast<int32_t>(t)) * 1e9);
+
+                // 设置位置、速度和加速度
+                smooth_trajectory.joint_trajectory.points[i].positions.resize(num_joints);
+                smooth_trajectory.joint_trajectory.points[i].velocities.resize(num_joints);
+                smooth_trajectory.joint_trajectory.points[i].accelerations.resize(num_joints);
+
+                for (size_t j = 0; j < num_joints; ++j)
+                {
+                    // 计算样条曲线在时间t的值和导数
+                    smooth_trajectory.joint_trajectory.points[i].positions[j] = splines[j](t)[0];
+                    smooth_trajectory.joint_trajectory.points[i].velocities[j] = splines[j].derivatives(t, 1)[0];
+                    smooth_trajectory.joint_trajectory.points[i].accelerations[j] = splines[j].derivatives(t, 2)[0];
                 }
             }
 
+            // 更新原轨迹
+            trajectory = smooth_trajectory;
+
+            RCLCPP_INFO(this->get_logger(), "使用样条曲线成功平滑轨迹");
             return true;
-        } catch (const std::exception& e) {
-            RCLCPP_ERROR(this->get_logger(), "执行航点失败: %s", e.what());
+        }
+        catch (const std::exception &e)
+        {
+            RCLCPP_ERROR(this->get_logger(), "样条曲线轨迹平滑失败: %s", e.what());
             return false;
         }
     }

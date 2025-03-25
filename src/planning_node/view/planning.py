@@ -37,7 +37,7 @@ for file in bitrrt_files:
         'joint_movement': df['Joint Movement (rad)'].values,
         'smoothness': df['Smoothness'].values
     })
-
+print(rrt_data)
 # 创建4x2的折线图
 fig, axes = plt.subplots(4, 2, figsize=(15, 20))
 metrics = ['planning_time', 'path_length', 'joint_movement', 'smoothness']

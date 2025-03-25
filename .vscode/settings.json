@@ -13,6 +13,12 @@
     "window.zoomLevel": 2,
     "files.associations": {
         "functional": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp"
     }
 }

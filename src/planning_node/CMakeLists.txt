@@ -102,6 +102,14 @@ ament_target_dependencies(ik_planning_test
   moveit_ros_planning_interface
   geometry_msgs
 )
+add_executable(trajectory_smooth_test test/trajectory_smooth_test.cpp)
+ament_target_dependencies(trajectory_smooth_test
+  rclcpp
+  moveit_ros_planning_interface
+  moveit_core
+  moveit_msgs
+  geometry_msgs
+)
 
 ament_target_dependencies(moveit_cartesian_test
   rclcpp
@@ -230,6 +238,7 @@ install(TARGETS
   waypoint_action_client_test_2
   match_point_converter
   ik_planning_test
+  trajectory_smooth_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
