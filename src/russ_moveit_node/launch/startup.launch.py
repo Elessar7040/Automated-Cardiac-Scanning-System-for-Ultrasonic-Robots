@@ -49,7 +49,7 @@ def generate_launch_description():
         output='screen'
     )
     cartesian_rel_action_server_node = Node(
-        package='planning_node',
+        package='end_control_node',
         executable='cartesian_rel_action_server',
         name='cartesian_rel_action_server_node',
         parameters=[

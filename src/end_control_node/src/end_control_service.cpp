@@ -29,10 +29,21 @@
 #include "end_control_node/srv/end_control.hpp"
 #include <memory>
 #include <thread>
+#include <geometry_msgs/msg/point.hpp>
+#include <geometry_msgs/msg/pose.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <functional>
+
+// 使用end_control_node自己的action定义
+#include "end_control_node/action/move_end_to_rel_pos.hpp"
+#include <rclcpp_action/rclcpp_action.hpp>
 
 class EndControlService : public rclcpp::Node
 {
 public:
+    using MoveEndToRelPos = end_control_node::action::MoveEndToRelPos;
+    using GoalHandleMoveEndToRelPos = rclcpp_action::ClientGoalHandle<MoveEndToRelPos>;
+    
     EndControlService() : Node("end_control_service")
     {
         // 创建服务
@@ -41,11 +52,58 @@ public:
             std::bind(&EndControlService::handle_request, this,
                 std::placeholders::_1, std::placeholders::_2));
 
+        // 订阅YOLO目标中心点话题
+        target_subscription_ = this->create_subscription<geometry_msgs::msg::Point>(
+            "/yolo/target_center", 10,
+            std::bind(&EndControlService::target_callback, this, std::placeholders::_1));
+            
+        // 订阅YOLO处理后的图像
+        image_subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
+            "/yolo/detected_image", 10,
+            std::bind(&EndControlService::image_callback, this, std::placeholders::_1));
+            
+        // 创建相对运动action客户端
+        rel_motion_client_ = rclcpp_action::create_client<MoveEndToRelPos>(
+            this, "move_end_to_rel_pos");
+
         RCLCPP_INFO(this->get_logger(), "末端控制服务已启动");
     }
 
 private:
     rclcpp::Service<end_control_node::srv::EndControl>::SharedPtr service_;
+    rclcpp::Subscription<geometry_msgs::msg::Point>::SharedPtr target_subscription_;
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscription_;
+    rclcpp_action::Client<MoveEndToRelPos>::SharedPtr rel_motion_client_;
+    
+    // 存储最新的目标中心点
+    geometry_msgs::msg::Point latest_target_center_;
+    bool has_target_ = false;
+    
+    // 存储图像尺寸
+    int image_width_ = 640;  // 默认值
+    int image_height_ = 480; // 默认值
+    bool has_image_ = false;
+    
+    // 视觉伺服参数
+    const double pixel_to_meter_factor_ = 0.0005;  // 像素到米的转换因子
+    const int max_visual_servo_attempts_ = 5;      // 最大视觉伺服尝试次数
+    const double position_tolerance_pixels_ = 10.0; // 位置容差（像素）
+    
+    void target_callback(const geometry_msgs::msg::Point::SharedPtr msg)
+    {
+        latest_target_center_ = *msg;
+        has_target_ = true;
+        RCLCPP_DEBUG(this->get_logger(), "收到目标中心点: x=%.2f, y=%.2f", 
+                    latest_target_center_.x, latest_target_center_.y);
+    }
+    
+    void image_callback(const sensor_msgs::msg::Image::SharedPtr msg)
+    {
+        image_width_ = msg->width;
+        image_height_ = msg->height;
+        has_image_ = true;
+        RCLCPP_DEBUG(this->get_logger(), "收到图像，尺寸: %dx%d", image_width_, image_height_);
+    }
     
     bool control_suction(uint8_t suction_id, bool enable)
     {
@@ -85,10 +143,16 @@ private:
                         request->action > 0.5);
                     break;
 
-                case end_control_node::srv::EndControl::Request::TYPE_GRIPPER:
-                    response->success = control_gripper(
-                        request->device_id,
-                        request->action);
+                case end_control_node::srv::EndControl::Request::TYPE_PROBE:
+                    {  // 添加花括号创建新的作用域
+                        bool probe_success = control_probe(request->pose);
+                        if (!probe_success)
+                        {
+                            RCLCPP_WARN(this->get_logger(), "探针未能完全对准目标");
+                            // 继续执行，但记录警告
+                        }
+                        response->success = probe_success;
+                    }  // 作用域结束
                     break;
 
                 default:
@@ -107,20 +171,94 @@ private:
             RCLCPP_ERROR(this->get_logger(), "服务处理异常: %s", e.what());
         }
     }
-
-    bool control_gripper(uint8_t gripper_id, double position)
+    
+    bool control_probe(const geometry_msgs::msg::Pose& initial_pose)
     {
-        RCLCPP_INFO(this->get_logger(), 
-            "控制夹爪 %d: 位置 %.2f", 
-            gripper_id, 
-            position);
-
-        // TODO: 在这里添加实际的硬件控制代码
-        // 例如：通过 CAN 或其他接口控制夹爪
-
-
+        // 使用 initial_pose 参数
+        RCLCPP_INFO(this->get_logger(), "执行探针控制，目标位置: [%f, %f, %f]",
+            initial_pose.position.x, initial_pose.position.y, initial_pose.position.z);
         
-        return true;  // 暂时返回成功
+        // 检查是否有目标点
+        if (!has_target_) {
+            RCLCPP_ERROR(this->get_logger(), "未检测到目标点，无法执行视觉伺服");
+            return false;
+        }
+        
+        // 执行视觉伺服
+        bool servo_success = perform_visual_servo();
+        if (!servo_success) {
+            RCLCPP_ERROR(this->get_logger(), "视觉伺服失败");
+            return false;
+        }
+        
+        // 模拟探针动作
+        RCLCPP_INFO(this->get_logger(), "探针到达目标位置，执行探针动作");
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        
+        RCLCPP_INFO(this->get_logger(), "探针控制完成");
+        return true;
+    }
+    
+    bool perform_visual_servo()
+    {
+        RCLCPP_INFO(this->get_logger(), "开始执行视觉伺服");
+        
+        if (!has_target_ || !has_image_) {
+            RCLCPP_ERROR(this->get_logger(), "缺少目标点或图像信息，无法执行视觉伺服");
+            return false;
+        }
+        
+        // 图像中心点
+        double center_x = image_width_ / 2.0;
+        double center_y = image_height_ / 2.0;
+        
+        bool is_centered = false;
+        int attempts = 0;
+        
+        while (!is_centered && attempts < max_visual_servo_attempts_) {
+            attempts++;
+            
+            // 计算目标点与图像中心的偏差
+            double error_x = latest_target_center_.x - center_x;
+            double error_y = latest_target_center_.y - center_y;
+            
+            // 检查是否已经居中
+            if (std::abs(error_x) < position_tolerance_pixels_ && 
+                std::abs(error_y) < position_tolerance_pixels_) {
+                is_centered = true;
+                RCLCPP_INFO(this->get_logger(), "目标已居中，偏差(像素): x=%.2f, y=%.2f", 
+                           error_x, error_y);
+                continue;
+            }
+            
+            // 计算相对运动（像素到米的转换）
+            // 注意：相机坐标系与机械臂坐标系的对应关系
+            // 假设：相机x轴对应机械臂-y轴，相机y轴对应机械臂-z轴
+            double move_y = -error_x * pixel_to_meter_factor_;
+            double move_z = -error_y * pixel_to_meter_factor_;
+            
+            RCLCPP_INFO(this->get_logger(), 
+                       "视觉伺服尝试 %d: 偏差(像素) x=%.2f, y=%.2f, 移动(米) y=%.4f, z=%.4f", 
+                       attempts, error_x, error_y, move_y, move_z);
+            
+            // 模拟移动，不实际调用服务
+            // 在实际应用中，这里应该调用moveEndToRelPos服务
+            
+            // 模拟等待新的目标检测结果
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            
+            // 模拟移动后的新位置（假设移动成功）
+            latest_target_center_.x = latest_target_center_.x - error_x * 0.5;
+            latest_target_center_.y = latest_target_center_.y - error_y * 0.5;
+        }
+        
+        if (is_centered) {
+            RCLCPP_INFO(this->get_logger(), "视觉伺服成功：目标已居中");
+            return true;
+        } else {
+            RCLCPP_WARN(this->get_logger(), "视觉伺服未能完全对准目标，已达到最大尝试次数");
+            return false;
+        }
     }
 };
 

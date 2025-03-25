@@ -38,7 +38,6 @@ install(
 # 添加action依赖
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/MoveEndToAbsPos.action"
-  "action/MoveEndToRelPos.action"
   "action/WaypointMotion.action"
   "srv/GlobPlanningSetting.srv"
   "msg/Waypoint.msg"
@@ -67,17 +66,8 @@ add_executable(cartesian_abs_action_server
 add_executable(cartesian_abs_action_client
   src/cartesian_abs_action_client.cpp
 )
-add_executable(cartesian_rel_action_server
-  src/cartesian_rel_action_server.cpp
-)
-add_executable(cartesian_rel_action_client
-  src/cartesian_rel_action_client.cpp
-)
 add_executable(cartesian_abs_action_client_test
   test/cartesian_abs_action_client_test.cpp
-)
-add_executable(cartesian_rel_action_client_test
-  test/cartesian_rel_action_client_test.cpp
 )
 add_executable(waypoint_action_server
   src/waypoint_action_server.cpp
@@ -146,28 +136,7 @@ ament_target_dependencies(cartesian_abs_action_client
   moveit_ros_planning_interface
   geometry_msgs
 )
-ament_target_dependencies(cartesian_rel_action_server
-  rclcpp
-  rclcpp_action
-  moveit_ros_planning_interface
-  geometry_msgs
-  tf2_geometry_msgs
-)
-ament_target_dependencies(cartesian_rel_action_client
-  rclcpp
-  rclcpp_action
-  moveit_ros_planning_interface
-  geometry_msgs
-  tf2_geometry_msgs
-)
 ament_target_dependencies(cartesian_abs_action_client_test
-  rclcpp
-  rclcpp_action
-  moveit_ros_planning_interface
-  geometry_msgs
-  tf2_geometry_msgs
-)
-ament_target_dependencies(cartesian_rel_action_client_test
   rclcpp
   rclcpp_action
   moveit_ros_planning_interface
@@ -200,16 +169,7 @@ target_link_libraries(cartesian_abs_action_server
 target_link_libraries(cartesian_abs_action_client 
   "${cpp_typesupport_target}"
 )
-target_link_libraries(cartesian_rel_action_server 
-  "${cpp_typesupport_target}"
-)
-target_link_libraries(cartesian_rel_action_client 
-  "${cpp_typesupport_target}"
-)
 target_link_libraries(cartesian_abs_action_client_test 
-  "${cpp_typesupport_target}"
-)
-target_link_libraries(cartesian_rel_action_client_test 
   "${cpp_typesupport_target}"
 )
 target_link_libraries(waypoint_action_server 
@@ -229,10 +189,7 @@ install(TARGETS
   moveit_obstacle_avoid_test
   cartesian_abs_action_server
   cartesian_abs_action_client
-  cartesian_rel_action_server
-  cartesian_rel_action_client
   cartesian_abs_action_client_test
-  cartesian_rel_action_client_test
   waypoint_action_server
   waypoint_action_client_test
   waypoint_action_client_test_2

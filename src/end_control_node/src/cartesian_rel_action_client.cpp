@@ -3,7 +3,7 @@
  * @Date: 2025-01-02 16:11:14
  * @LastEditors: "feiyang_hong" "feiyang.hong@infinityrobot.cn"
  * @LastEditTime: 2025-01-06 14:21:25
- * @FilePath: /planning_control_node/src/planning_node/src/cartesian_rel_action_client.cpp
+ * @FilePath: /end_control_node/src/end_control_node/src/cartesian_rel_action_client.cpp
  * @Description: 笛卡尔空间相对位置运动的Action客户端。
  *               实现机械臂末端执行器移动到当前位置的相对位置。
  * 
@@ -16,12 +16,12 @@
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
-#include "planning_node/action/move_end_to_rel_pos.hpp"
+#include "end_control_node/action/move_end_to_rel_pos.hpp"
 
 class RelativeMotionClient : public rclcpp::Node
 {
 public:
-    using MoveEndToRelPos = planning_node::action::MoveEndToRelPos;
+    using MoveEndToRelPos = end_control_node::action::MoveEndToRelPos;
     using GoalHandleMoveEndToRelPos = rclcpp_action::ClientGoalHandle<MoveEndToRelPos>;
 
     RelativeMotionClient() : Node("relative_motion_client")
@@ -30,7 +30,7 @@ public:
             this, "moveEndToRelPos");
 
         // 创建参数
-        this->declare_parameter("arm_id", "ur_group");
+        this->declare_parameter("arm_id", "russ_group");
         this->declare_parameter("rel_x", 0.1);
         this->declare_parameter("rel_y", 0.0);
         this->declare_parameter("rel_z", 0.1);

@@ -31,7 +31,7 @@ uint8 algorithm_mode
 
 # 末端执行器
 uint8 END_SUCTION=1        # 吸盘
-uint8 END_GRIPPER=2        # 夹手
+uint8 END_PROBE=2        # 探针
 uint8 end_effector_type
 uint32 end_effector_id     # 末端夹具型号
 float32 end_effector_action # 末端夹具动作

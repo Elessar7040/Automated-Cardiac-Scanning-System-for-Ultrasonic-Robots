@@ -3,7 +3,7 @@
  * @Date: 2025-01-02 15:55:20
  * @LastEditors: "feiyang_hong" "feiyang.hong@infinityrobot.cn"
  * @LastEditTime: 2025-01-03 12:21:32
- * @FilePath: /planning_control_node/src/planning_node/src/cartesian_rel_action_server.cpp
+ * @FilePath: /end_control_node/src/end_control_node/src/cartesian_rel_action_server.cpp
  * @Description: 笛卡尔空间相对位置运动的Action服务端
  *               实现名为RelativeMotionServer的节点，用于控制机械臂末端执行器进行相对位置运动
  *               提供了moveEndToRelPos Action服务，用于处理相对运动请求
@@ -14,24 +14,22 @@
  *     - 输出: success (执行结果), message (结果信息)
  */
 
-#include <functional>
 #include <memory>
 #include <thread>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
+#include "end_control_node/action/move_end_to_rel_pos.hpp"
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-#include "planning_node/action/move_end_to_rel_pos.hpp"
-#include "planning_node/action_server_base.hpp"
 
-class RelativeMotionServer : public ActionServerBase
+class RelativeMotionServer : public rclcpp::Node
 {
 public:
-    using MoveEndToRelPos = planning_node::action::MoveEndToRelPos;
+    using MoveEndToRelPos = end_control_node::action::MoveEndToRelPos;
     using GoalHandleMoveEndToRelPos = rclcpp_action::ServerGoalHandle<MoveEndToRelPos>;
 
-    RelativeMotionServer() 
-        : ActionServerBase("cartesian_rel_action_server")
+    RelativeMotionServer()
+        : Node("cartesian_rel_action_server")
     {
         using namespace std::placeholders;
 
@@ -40,8 +38,7 @@ public:
             "moveEndToRelPos",
             std::bind(&RelativeMotionServer::handle_goal, this, _1, _2),
             std::bind(&RelativeMotionServer::handle_cancel, this, _1),
-            std::bind(&RelativeMotionServer::handle_accepted, this, _1)
-        );
+            std::bind(&RelativeMotionServer::handle_accepted, this, _1));
 
         RCLCPP_INFO(this->get_logger(), "相对运动 Action Server 已启动");
     }
@@ -50,12 +47,11 @@ private:
     rclcpp_action::Server<MoveEndToRelPos>::SharedPtr action_server_;
 
     rclcpp_action::GoalResponse handle_goal(
-        const rclcpp_action::GoalUUID& uuid,
+        const rclcpp_action::GoalUUID & uuid,
         std::shared_ptr<const MoveEndToRelPos::Goal> goal)
     {
-        (void)uuid;  // 标记参数为已使用
-        (void)goal;  // 标记参数为已使用
         RCLCPP_INFO(this->get_logger(), "收到新的相对运动请求");
+        (void)uuid;
         return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
     }
 
@@ -72,6 +68,16 @@ private:
         std::thread{std::bind(&RelativeMotionServer::execute, this, goal_handle)}.detach();
     }
 
+    void configure_move_group(
+        std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group)
+    {
+        move_group->setPlannerId("BiTRRT");
+        move_group->clearPathConstraints();
+        
+        move_group->setMaxVelocityScalingFactor(0.3);
+        move_group->setMaxAccelerationScalingFactor(0.3);
+    }
+
     void execute(const std::shared_ptr<GoalHandleMoveEndToRelPos> goal_handle)
     {
         RCLCPP_INFO(this->get_logger(), "执行相对运动目标");
@@ -79,13 +85,14 @@ private:
         auto feedback = std::make_shared<MoveEndToRelPos::Feedback>();
         auto result = std::make_shared<MoveEndToRelPos::Result>();
 
+        // 创建MoveGroup接口
         auto move_group = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
             shared_from_this(), goal->arm_id);
         
-        // 使用基类的配置函数
+        // 配置MoveGroup
         configure_move_group(move_group);
 
-        // 获取当前位姿
+        // 获取当前末端位姿
         geometry_msgs::msg::PoseStamped current_pose = move_group->getCurrentPose();
         
         // 计算目标位姿（当前位姿 + 相对位姿）
@@ -133,7 +140,8 @@ private:
             result->message = "相对运动规划失败";
             RCLCPP_ERROR(this->get_logger(), "路径规划失败");
         }
-
+        
+        // 检查是否被取消
         if (goal_handle->is_canceling()) {
             result->success = false;
             result->message = "任务被取消";
@@ -141,12 +149,12 @@ private:
             RCLCPP_INFO(this->get_logger(), "目标被取消");
             return;
         }
-
+        
         goal_handle->succeed(result);
     }
 };
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<RelativeMotionServer>();

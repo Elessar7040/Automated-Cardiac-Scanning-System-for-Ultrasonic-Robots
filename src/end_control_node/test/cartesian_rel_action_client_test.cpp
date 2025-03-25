@@ -3,18 +3,18 @@
  * @Date: 2025-01-07 17:12:20
  * @LastEditors: “feiyang_hong” “feiyang.hong@infinityrobot.cn”
  * @LastEditTime: 2025-01-08 17:28:00
- * @FilePath: /planning_control_node/src/planning_node/test/cartesian_rel_action_client_test.cpp
+ * @FilePath: /end_control_node/src/end_control_node/test/cartesian_rel_action_client_test.cpp
  * @Description: 笛卡尔相对规划测试
  */
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
-#include "planning_node/action/move_end_to_rel_pos.hpp"
+#include "end_control_node/action/move_end_to_rel_pos.hpp"
 #include <functional>
 
 class CartesianRelTestClient : public rclcpp::Node
 {
 public:
-    using MoveEndToRelPos = planning_node::action::MoveEndToRelPos;
+    using MoveEndToRelPos = end_control_node::action::MoveEndToRelPos;
     using GoalHandleMoveRel = rclcpp_action::ClientGoalHandle<MoveEndToRelPos>;
 
     CartesianRelTestClient() 

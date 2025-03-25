@@ -12,6 +12,8 @@
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
   <depend>obstacle_node</depend>
+  <depend>sensor_msgs</depend>
+  <depend>rclcpp_action</depend>
 
   <!-- 添加消息生成依赖 -->
   <build_depend>rosidl_default_generators</build_depend>

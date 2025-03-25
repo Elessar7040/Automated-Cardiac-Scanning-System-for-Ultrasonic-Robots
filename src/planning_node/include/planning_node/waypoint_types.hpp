@@ -23,7 +23,7 @@ struct WaypointAction {
     uint8_t algorithm_mode;
     // 末端执行器
     static constexpr uint8_t END_SUCTION = 0x01;        // 吸盘
-    static constexpr uint8_t END_GRIPPER = 0x02;        // 夹手
+    static constexpr uint8_t END_PROBE = 0x02;        // 探针
     uint8_t end_effector_type;
     uint32_t end_effector_id;                           // 末端夹具型号
     float end_effector_action;                          // 末端夹具动作
