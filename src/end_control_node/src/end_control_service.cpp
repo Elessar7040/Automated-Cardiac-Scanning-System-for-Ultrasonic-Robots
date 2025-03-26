@@ -86,7 +86,7 @@ private:
     
     // 视觉伺服参数
     const double pixel_to_meter_factor_ = 0.0005;  // 像素到米的转换因子
-    const int max_visual_servo_attempts_ = 5;      // 最大视觉伺服尝试次数
+    const int max_visual_servo_attempts_ = 3;      // 最大视觉伺服尝试次数
     const double position_tolerance_pixels_ = 10.0; // 位置容差（像素）
     
     void target_callback(const geometry_msgs::msg::Point::SharedPtr msg)
@@ -283,7 +283,7 @@ private:
                 //     RCLCPP_ERROR(this->get_logger(), "等待结果超时");
                 //     return false;
                 // }
-                std::this_thread::sleep_for(std::chrono::seconds(2));
+                std::this_thread::sleep_for(std::chrono::seconds(10));
                 // auto result = result_future.get();
                 
                 // if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
