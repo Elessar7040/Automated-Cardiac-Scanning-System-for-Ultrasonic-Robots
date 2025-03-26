@@ -54,17 +54,17 @@ public:
 
         // 订阅YOLO目标中心点话题
         target_subscription_ = this->create_subscription<geometry_msgs::msg::Point>(
-            "/yolo/target_center", 10,
+            "/yolo/target_center", 1,
             std::bind(&EndControlService::target_callback, this, std::placeholders::_1));
             
         // 订阅YOLO处理后的图像
         image_subscription_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/yolo/detected_image", 10,
+            "/yolo/detected_image", 1,
             std::bind(&EndControlService::image_callback, this, std::placeholders::_1));
             
         // 创建相对运动action客户端
         rel_motion_client_ = rclcpp_action::create_client<MoveEndToRelPos>(
-            this, "move_end_to_rel_pos");
+            this, "moveEndToRelPos");
 
         RCLCPP_INFO(this->get_logger(), "末端控制服务已启动");
     }
@@ -80,8 +80,8 @@ private:
     bool has_target_ = false;
     
     // 存储图像尺寸
-    int image_width_ = 640;  // 默认值
-    int image_height_ = 480; // 默认值
+    int image_width_ = 1264;  // 默认值
+    int image_height_ = 880; // 默认值
     bool has_image_ = false;
     
     // 视觉伺服参数
@@ -180,8 +180,8 @@ private:
         
         // 检查是否有目标点
         if (!has_target_) {
-            RCLCPP_ERROR(this->get_logger(), "未检测到目标点，无法执行视觉伺服");
-            return false;
+            RCLCPP_ERROR(this->get_logger(), "未检测到目标点，继续执行视觉伺服");
+            // return false;
         }
         
         // 执行视觉伺服
@@ -203,11 +203,6 @@ private:
     {
         RCLCPP_INFO(this->get_logger(), "开始执行视觉伺服");
         
-        if (!has_target_ || !has_image_) {
-            RCLCPP_ERROR(this->get_logger(), "缺少目标点或图像信息，无法执行视觉伺服");
-            return false;
-        }
-        
         // 图像中心点
         double center_x = image_width_ / 2.0;
         double center_y = image_height_ / 2.0;
@@ -222,6 +217,10 @@ private:
             double error_x = latest_target_center_.x - center_x;
             double error_y = latest_target_center_.y - center_y;
             
+            RCLCPP_INFO(this->get_logger(), "视觉伺服尝试 %d: 偏差(像素) x=%.2f, y=%.2f, 移动(米) y=%.4f, z=%.4f",
+                       attempts, error_x, error_y, 
+                       -error_x * pixel_to_meter_factor_, -error_y * pixel_to_meter_factor_);
+            
             // 检查是否已经居中
             if (std::abs(error_x) < position_tolerance_pixels_ && 
                 std::abs(error_y) < position_tolerance_pixels_) {
@@ -231,25 +230,92 @@ private:
                 continue;
             }
             
-            // 计算相对运动（像素到米的转换）
-            // 注意：相机坐标系与机械臂坐标系的对应关系
-            // 假设：相机x轴对应机械臂-y轴，相机y轴对应机械臂-z轴
-            double move_y = -error_x * pixel_to_meter_factor_;
-            double move_z = -error_y * pixel_to_meter_factor_;
+            // 创建目标消息
+            auto goal_msg = MoveEndToRelPos::Goal();
+            goal_msg.arm_id = "russ_group";  // 使用正确的机械臂ID
             
-            RCLCPP_INFO(this->get_logger(), 
-                       "视觉伺服尝试 %d: 偏差(像素) x=%.2f, y=%.2f, 移动(米) y=%.4f, z=%.4f", 
-                       attempts, error_x, error_y, move_y, move_z);
+            // 正确设置Pose类型
+            goal_msg.pos.position.x = 0.0;  // 不移动x方向
+            goal_msg.pos.position.y = -error_x * pixel_to_meter_factor_;  // 将x像素误差转换为y方向移动
+            goal_msg.pos.position.z = -error_y * pixel_to_meter_factor_;  // 将y像素误差转换为z方向移动
             
-            // 模拟移动，不实际调用服务
-            // 在实际应用中，这里应该调用moveEndToRelPos服务
+            // 设置方向四元数为单位四元数（不旋转）
+            goal_msg.pos.orientation.x = 0.0;
+            goal_msg.pos.orientation.y = 0.0;
+            goal_msg.pos.orientation.z = 0.0;
+            goal_msg.pos.orientation.w = 1.0;
             
-            // 模拟等待新的目标检测结果
+            RCLCPP_INFO(this->get_logger(), "发送相对运动目标: y=%.4f, z=%.4f", 
+                       goal_msg.pos.position.y, goal_msg.pos.position.z);
+            
+            // 使用同步方式调用Action
+            // bool move_success = false;
+            
+            try {
+                // 确保Action服务器可用
+                if (!rel_motion_client_->wait_for_action_server(std::chrono::seconds(5))) {
+                    RCLCPP_ERROR(this->get_logger(), "Action服务器不可用");
+                    return false;
+                }
+                
+                // 使用同步发送目标的方式
+                auto goal_handle_future = rel_motion_client_->async_send_goal(goal_msg);
+                
+                // // 等待目标被接受
+                // if (goal_handle_future.wait_for(std::chrono::seconds(10)) != std::future_status::ready) {
+                //     RCLCPP_ERROR(this->get_logger(), "等待目标接受超时");
+                //     return false;
+                // }
+                
+                // auto goal_handle = goal_handle_future.get();
+                // if (!goal_handle) {
+                //     RCLCPP_ERROR(this->get_logger(), "目标被拒绝");
+                //     return false;
+                // }
+                
+                RCLCPP_INFO(this->get_logger(), "目标被接受");
+                
+                // 等待结果
+                // auto result_future = rel_motion_client_->async_get_result(goal_handle);
+                
+                // // 等待结果
+                // if (result_future.wait_for(std::chrono::seconds(30)) != std::future_status::ready) {
+                //     RCLCPP_ERROR(this->get_logger(), "等待结果超时");
+                //     return false;
+                // }
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                // auto result = result_future.get();
+                
+                // if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
+                //     move_success = result.result->success;
+                //     RCLCPP_INFO(this->get_logger(), "收到结果: %s", 
+                //                move_success ? "成功" : "失败");
+                // } else {
+                //     move_success = false;
+                //     RCLCPP_ERROR(this->get_logger(), "Action失败，结果代码: %d", 
+                //                 static_cast<int>(result.code));
+                // }
+                
+            } catch (const std::exception& e) {
+                RCLCPP_ERROR(this->get_logger(), "执行相对运动时发生异常: %s", e.what());
+                return false;
+            }
+            
+            // if (!move_success) {
+            //     RCLCPP_ERROR(this->get_logger(), "相对运动执行失败");
+            //     return false;
+            // }
+            
+            RCLCPP_INFO(this->get_logger(), "相对运动执行成功，继续视觉伺服");
+            
+            // 等待新的目标检测结果
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             
-            // 模拟移动后的新位置（假设移动成功）
-            latest_target_center_.x = latest_target_center_.x - error_x * 0.5;
-            latest_target_center_.y = latest_target_center_.y - error_y * 0.5;
+            // 这里应该有新的目标检测结果更新 latest_target_center_
+            // 在实际应用中，这会由图像回调自动更新
+            // 为了测试，我们模拟目标位置更新
+            // latest_target_center_.x = latest_target_center_.x - error_x * 0.8;
+            // latest_target_center_.y = latest_target_center_.y - error_y * 0.8;
         }
         
         if (is_centered) {

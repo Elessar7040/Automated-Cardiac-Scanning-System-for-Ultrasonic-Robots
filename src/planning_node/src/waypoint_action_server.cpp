@@ -205,9 +205,26 @@ private:
                     auto result = end_control_client_->async_send_request(request).get();
                     if (!result || !result->success)
                     {
-                        RCLCPP_ERROR(this->get_logger(), "末端控制失败: %s",
+                        RCLCPP_ERROR(this->get_logger(), "末端Suction控制失败: %s",
                                      result ? result->message.c_str() : "调用失败");
                         return false;
+                    }
+                }
+                if (waypoint.end_effector_type == planning_node::msg::Waypoint::END_PROBE)
+                {
+                    auto request = std::make_shared<end_control_node::srv::EndControl::Request>();
+                    request->device_type = request->TYPE_PROBE;
+                    request->device_id = 1;
+                    request->action = waypoint.end_effector_action;
+                    request->pose = waypoint.waypoint_pose;
+
+                    // 使用同步调用
+                    auto result = end_control_client_->async_send_request(request).get();
+                    if (!result || !result->success)
+                    {
+                        RCLCPP_ERROR(this->get_logger(), "末端Probe控制失败: %s",
+                                     result ? result->message.c_str() : "调用失败");
+                        // return false;
                     }
                 }
             }

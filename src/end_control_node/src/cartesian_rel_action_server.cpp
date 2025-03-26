@@ -29,7 +29,7 @@ public:
     using GoalHandleMoveEndToRelPos = rclcpp_action::ServerGoalHandle<MoveEndToRelPos>;
 
     RelativeMotionServer()
-        : Node("cartesian_rel_action_server")
+        : Node("cartesian_rel_action_server_node")
     {
         using namespace std::placeholders;
 
@@ -45,6 +45,7 @@ public:
 
 private:
     rclcpp_action::Server<MoveEndToRelPos>::SharedPtr action_server_;
+    std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
 
     rclcpp_action::GoalResponse handle_goal(
         const rclcpp_action::GoalUUID & uuid,
@@ -81,76 +82,81 @@ private:
     void execute(const std::shared_ptr<GoalHandleMoveEndToRelPos> goal_handle)
     {
         RCLCPP_INFO(this->get_logger(), "执行相对运动目标");
+        
         const auto goal = goal_handle->get_goal();
-        auto feedback = std::make_shared<MoveEndToRelPos::Feedback>();
         auto result = std::make_shared<MoveEndToRelPos::Result>();
-
-        // 创建MoveGroup接口
-        auto move_group = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
-            shared_from_this(), goal->arm_id);
         
-        // 配置MoveGroup
-        configure_move_group(move_group);
-
-        // 获取当前末端位姿
-        geometry_msgs::msg::PoseStamped current_pose = move_group->getCurrentPose();
-        
-        // 计算目标位姿（当前位姿 + 相对位姿）
-        geometry_msgs::msg::Pose target_pose;
-        target_pose.position.x = current_pose.pose.position.x + goal->pos.position.x;
-        target_pose.position.y = current_pose.pose.position.y + goal->pos.position.y;
-        target_pose.position.z = current_pose.pose.position.z + goal->pos.position.z;
-
-        // 处理姿态（四元数相乘）
-        tf2::Quaternion q_current, q_relative, q_target;
-        tf2::fromMsg(current_pose.pose.orientation, q_current);
-        tf2::fromMsg(goal->pos.orientation, q_relative);
-        q_target = q_current * q_relative;
-        q_target.normalize();
-        target_pose.orientation = tf2::toMsg(q_target);
-
-        // 设置目标位姿
-        move_group->setPoseTarget(target_pose);
-
-        // 规划和执行
-        moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-        bool plan_success = (move_group->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
-
-        if (plan_success) {
-            RCLCPP_INFO(this->get_logger(), 
-                "规划成功，目标位置: x=%.3f, y=%.3f, z=%.3f",
-                target_pose.position.x,
-                target_pose.position.y,
-                target_pose.position.z);
-
-            // 执行运动并检查执行结果
-            moveit::core::MoveItErrorCode execute_result = move_group->execute(my_plan);
-            bool execute_success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
-
-            if (execute_success) {
-                result->success = true;
-                result->message = "相对运动执行成功";
-            } else {
-                result->success = false;
-                result->message = "执行失败，错误代码: " + std::to_string(execute_result.val);
-                RCLCPP_ERROR(this->get_logger(), "运动执行失败，错误代码: %d", execute_result.val);
+        try {
+            // 初始化MoveGroup
+            if (!move_group_) {
+                move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
+                    shared_from_this(), goal->arm_id);
             }
-        } else {
+
+            configure_move_group(move_group_);
+
+            // 获取当前位姿
+            geometry_msgs::msg::PoseStamped current_pose = move_group_->getCurrentPose();
+
+            // 计算目标位姿（当前位姿 + 相对位移）
+            geometry_msgs::msg::Pose target_pose = current_pose.pose;
+            target_pose.position.x += goal->pos.position.x;
+            target_pose.position.y += goal->pos.position.y;
+            target_pose.position.z += goal->pos.position.z;
+            
+            // 设置目标位姿
+            move_group_->setPoseTarget(target_pose);
+            
+            // 执行规划
+            moveit::planning_interface::MoveGroupInterface::Plan plan;
+            auto plan_result = move_group_->plan(plan);
+            bool plan_success = (plan_result == moveit::core::MoveItErrorCode::SUCCESS);
+            
+            if (plan_success) {
+                RCLCPP_INFO(this->get_logger(), "规划成功，目标位置: x=%.3f, y=%.3f, z=%.3f",
+                           target_pose.position.x, target_pose.position.y, target_pose.position.z);
+                
+                // 开始执行运动
+                RCLCPP_INFO(this->get_logger(), "开始执行运动");
+                auto execute_result = move_group_->execute(plan);
+                bool execute_success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
+                
+                if (execute_success) {
+                    RCLCPP_INFO(this->get_logger(), "相对运动执行成功");
+                    result->success = true;
+                    result->message = "相对运动执行成功";
+                } else {
+                    RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
+                    result->success = false;
+                    result->message = "执行失败，错误代码: " + std::to_string(execute_result.val);
+                }
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "规划失败，错误代码: %d", plan_result.val);
+                result->success = false;
+                result->message = "规划失败，错误代码: " + std::to_string(plan_result.val);
+            }
+        } catch (const std::exception& e) {
+            RCLCPP_ERROR(this->get_logger(), "执行过程出错: %s", e.what());
             result->success = false;
-            result->message = "相对运动规划失败";
-            RCLCPP_ERROR(this->get_logger(), "路径规划失败");
+            result->message = "执行过程出错: " + std::string(e.what());
         }
         
         // 检查是否被取消
         if (goal_handle->is_canceling()) {
             result->success = false;
             result->message = "任务被取消";
+            RCLCPP_INFO(this->get_logger(), "发送取消结果到客户端");
             goal_handle->canceled(result);
-            RCLCPP_INFO(this->get_logger(), "目标被取消");
             return;
         }
         
+        // 发送结果
+        RCLCPP_INFO(this->get_logger(), "发送成功结果到客户端");
         goal_handle->succeed(result);
+        
+        // 确保结果被发送
+        RCLCPP_INFO(this->get_logger(), "结果已发送，等待客户端接收");
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 };
 

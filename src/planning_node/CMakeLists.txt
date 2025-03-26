@@ -72,8 +72,8 @@ add_executable(cartesian_abs_action_client_test
 add_executable(waypoint_action_server
   src/waypoint_action_server.cpp
 )
-add_executable(waypoint_action_client_test
-  test/waypoint_action_client_test.cpp
+add_executable(waypoint_action_client_test_1
+  test/waypoint_action_client_test_1.cpp
 )
 add_executable(waypoint_action_client_test_2
   test/waypoint_action_client_test_2.cpp
@@ -99,6 +99,13 @@ ament_target_dependencies(trajectory_smooth_test
   moveit_core
   moveit_msgs
   geometry_msgs
+)
+add_executable(waypoint_action_client_test_3
+  test/waypoint_action_client_test_3.cpp
+)
+ament_target_dependencies(waypoint_action_client_test_3
+  rclcpp
+  rclcpp_action
 )
 
 ament_target_dependencies(moveit_cartesian_test
@@ -149,7 +156,7 @@ ament_target_dependencies(waypoint_action_server
   moveit_ros_planning_interface
   end_control_node
 )
-ament_target_dependencies(waypoint_action_client_test
+ament_target_dependencies(waypoint_action_client_test_1
   rclcpp
   rclcpp_action
 )
@@ -175,10 +182,13 @@ target_link_libraries(cartesian_abs_action_client_test
 target_link_libraries(waypoint_action_server 
   "${cpp_typesupport_target}"
 )
-target_link_libraries(waypoint_action_client_test 
+target_link_libraries(waypoint_action_client_test_1 
   "${cpp_typesupport_target}"
 )
 target_link_libraries(waypoint_action_client_test_2 
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(waypoint_action_client_test_3 
   "${cpp_typesupport_target}"
 )
 
@@ -191,8 +201,9 @@ install(TARGETS
   cartesian_abs_action_client
   cartesian_abs_action_client_test
   waypoint_action_server
-  waypoint_action_client_test
+  waypoint_action_client_test_1
   waypoint_action_client_test_2
+  waypoint_action_client_test_3
   match_point_converter
   ik_planning_test
   trajectory_smooth_test
