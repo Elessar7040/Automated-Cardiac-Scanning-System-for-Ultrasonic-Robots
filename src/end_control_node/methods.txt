@@ -1,0 +1,4 @@
+使用MultiThreadedExecutor并在多个线程中处理回调
+使用单独的节点实例来处理Action客户端
+不创建新的执行器，而是在Action客户端中使用同步API
+重新设计应用程序架构，避免这种冲突

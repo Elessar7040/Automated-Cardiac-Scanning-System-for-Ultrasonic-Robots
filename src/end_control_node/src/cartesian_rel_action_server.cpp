@@ -66,7 +66,10 @@ private:
 
     void handle_accepted(const std::shared_ptr<GoalHandleMoveEndToRelPos> goal_handle)
     {
-        std::thread{std::bind(&RelativeMotionServer::execute, this, goal_handle)}.detach();
+        // 使用共享指针保持线程引用
+        auto execute_thread = std::make_shared<std::thread>(
+            std::bind(&RelativeMotionServer::execute, this, goal_handle));
+        execute_thread->detach();
     }
 
     void configure_move_group(
