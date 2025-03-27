@@ -19,6 +19,8 @@ find_package(moveit_ros_planning REQUIRED)
 find_package(moveit_msgs REQUIRED)
 find_package(trac_ik_lib REQUIRED)
 find_package(NLopt REQUIRED)
+find_package(srdfdom REQUIRED)
+find_package(geometric_shapes REQUIRED)
 
 # Finds Boost Components
 include(ConfigExtras.cmake)
@@ -36,6 +38,8 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   moveit_core
   moveit_ros_planning
   Boost
+  srdfdom
+  geometric_shapes
 )
 
 pluginlib_export_plugin_description_file(moveit_core trac_ik_kinematics_plugin_description.xml)

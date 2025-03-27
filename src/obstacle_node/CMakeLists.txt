@@ -13,6 +13,13 @@ find_package(geometry_msgs REQUIRED)
 find_package(moveit_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(eigen_stl_containers REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(moveit_core REQUIRED)
+
+# 添加缺失的srdfdom和geometric_shapes依赖
+find_package(srdfdom REQUIRED)
+find_package(geometric_shapes REQUIRED)
 
 # 添加action依赖
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -36,6 +43,11 @@ ament_target_dependencies(obstacle_test_1
   geometry_msgs
   moveit_msgs
   tf2_ros
+  eigen_stl_containers
+  Eigen3
+  moveit_core
+  srdfdom
+  geometric_shapes
 )
 ament_target_dependencies(obstacle_service
   rclcpp
@@ -43,6 +55,11 @@ ament_target_dependencies(obstacle_service
   geometry_msgs
   moveit_msgs
   tf2_ros
+  eigen_stl_containers
+  Eigen3
+  moveit_core
+  srdfdom
+  geometric_shapes
 )
 
 # 链接生成的接口库

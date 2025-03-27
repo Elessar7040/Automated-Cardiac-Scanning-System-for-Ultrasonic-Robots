@@ -14,6 +14,8 @@ ament_target_dependencies(${MOVEIT_LIB_NAME}
   tf2_kdl
   EIGEN3
   trac_ik_lib
+  srdfdom
+  geometric_shapes
 )
 
 # prevent pluginlib from using boost
