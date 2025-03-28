@@ -41,6 +41,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/WaypointMotion.action"
   "srv/GlobPlanningSetting.srv"
   "msg/Waypoint.msg"
+  "action/MoveEndLinear.action"
   DEPENDENCIES geometry_msgs
 )
 # 生成导出依赖
@@ -107,6 +108,24 @@ ament_target_dependencies(waypoint_action_client_test_3
   rclcpp
   rclcpp_action
 )
+add_executable(cartesian_linear_action_server
+  src/cartesian_linear_action_server.cpp
+)
+ament_target_dependencies(cartesian_linear_action_server
+  rclcpp
+  rclcpp_action
+  moveit_ros_planning_interface
+  geometry_msgs
+)
+add_executable(cartesian_linear_action_client_test 
+  test/cartesian_linear_action_client_test.cpp
+)
+ament_target_dependencies(cartesian_linear_action_client_test
+  rclcpp
+  rclcpp_action
+  geometry_msgs
+  moveit_ros_planning_interface
+)
 
 ament_target_dependencies(moveit_cartesian_test
   rclcpp
@@ -169,6 +188,7 @@ ament_target_dependencies(match_point_converter
   geometry_msgs
 )
 
+
 # 链接生成的接口库
 target_link_libraries(cartesian_abs_action_server 
   "${cpp_typesupport_target}"
@@ -191,6 +211,12 @@ target_link_libraries(waypoint_action_client_test_2
 target_link_libraries(waypoint_action_client_test_3 
   "${cpp_typesupport_target}"
 )
+target_link_libraries(cartesian_linear_action_server
+  "${cpp_typesupport_target}"
+)
+target_link_libraries(cartesian_linear_action_client_test
+  "${cpp_typesupport_target}"
+)
 
 install(TARGETS
   moveit_cartesian_test_2
@@ -207,6 +233,8 @@ install(TARGETS
   match_point_converter
   ik_planning_test
   trajectory_smooth_test
+  cartesian_linear_action_server
+  cartesian_linear_action_client_test
   DESTINATION lib/${PROJECT_NAME}
 )
 

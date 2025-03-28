@@ -1,0 +1,12 @@
+# Goal
+string arm_id                 # 机械臂规划组ID
+geometry_msgs/Pose end_pos    # 目标位姿
+float64 step_size             # 轨迹点间距（米），<=0时使用默认值
+---
+# Result
+bool success                  # 执行成功标志
+string message                # 结果消息
+---
+# Feedback
+float64 progress              # 执行进度（0.0-1.0）
+geometry_msgs/Pose current_pose # 当前位姿

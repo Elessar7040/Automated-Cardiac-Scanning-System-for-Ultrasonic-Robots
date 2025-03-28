@@ -75,6 +75,24 @@ def generate_launch_description():
         ],
         output='screen'
     )
+    cartesian_linear_action_server_node = Node(
+        package='planning_node',
+        executable='cartesian_linear_action_server',
+        name='cartesian_linear_action_server_node',
+        parameters=[
+            {"use_sim_time": True}
+        ],
+        output='screen'
+    )
+    cartesian_linear_action_client_test_node = Node(
+        package='planning_node',
+        executable='cartesian_linear_action_client_test',
+        name='cartesian_linear_action_client_test_node',
+        parameters=[
+            {"use_sim_time": True}
+        ],
+        output='screen'
+    )
 
     # 创建启动描述
     ld = LaunchDescription()
@@ -88,7 +106,8 @@ def generate_launch_description():
     ld.add_action(cartesian_abs_action_server_node)
     # ld.add_action(cartesian_abs_action_client_node)
     ld.add_action(cartesian_rel_action_server_node)
-
+    # ld.add_action(cartesian_linear_action_server_node)
+    # ld.add_action(cartesian_linear_action_client_test_node)
     # 开启后，可实现控制接口 waypoint
     ld.add_action(waypoint_action_server_node)
     ld.add_action(end_control_node)
