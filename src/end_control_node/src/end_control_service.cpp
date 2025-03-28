@@ -367,7 +367,7 @@ private:
             }
             
             // 等待新的目标检测结果
-            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         
         if (is_centered) {

@@ -238,52 +238,100 @@ private:
         }
     }
 
+    // 计算轨迹的总关节运动量
+    double calculateTotalJointMovement(const moveit::planning_interface::MoveGroupInterface::Plan& plan)
+    {
+        double total_movement = 0.0;
+        
+        if (plan.trajectory_.joint_trajectory.points.size() < 2) {
+            RCLCPP_WARN(this->get_logger(), "轨迹点数量不足，无法计算关节运动量");
+            return 0.0;
+        }
+        
+        const auto& first_point = plan.trajectory_.joint_trajectory.points.front();
+        const auto& last_point = plan.trajectory_.joint_trajectory.points.back();
+        
+        // 计算起点到终点的总关节运动量
+        for (size_t j = 0; j < first_point.positions.size(); j++) {
+            // 计算关节起点和终点的差值
+            double joint_diff = std::abs(last_point.positions[j] - first_point.positions[j]);
+            total_movement += joint_diff;
+        }
+        
+        return total_movement;
+    }
+
     bool move_to_target(const geometry_msgs::msg::Pose& target_pose)
     {
         try {
             // 设置目标位姿
             move_group_->setPoseTarget(target_pose);
 
-            // 执行规划和移动
-            moveit::planning_interface::MoveGroupInterface::Plan plan;
+            // 执行多解规划策略
+            std::vector<moveit::planning_interface::MoveGroupInterface::Plan> plans;
+            const int MAX_PLANS = 5; // 生成5个规划方案
             
-            // 多次尝试规划
-            bool success = false;
-            int max_attempts = 5;
+            // 存储最佳方案的索引和其总关节运动量
+            int best_plan_index = -1;
+            double min_joint_movement = std::numeric_limits<double>::max();
+            
+            // 初始容差设置
             double position_tolerance = 0.01;  // 初始位置容差
             double orientation_tolerance = 0.1;  // 初始方向容差
             
-            for (int attempt = 0; attempt < max_attempts && !success; ++attempt) {
-                RCLCPP_INFO(this->get_logger(), "规划尝试 %d/%d", attempt + 1, max_attempts);
+            // 多次尝试规划，收集成功的方案
+            for (int attempt = 0; attempt < MAX_PLANS; ++attempt) {
+                RCLCPP_INFO(this->get_logger(), "规划尝试 %d/%d", attempt + 1, MAX_PLANS);
                 
                 // 设置当前尝试的容差
                 move_group_->setGoalPositionTolerance(position_tolerance);
                 move_group_->setGoalOrientationTolerance(orientation_tolerance);
                 
-                auto plan_result = move_group_->plan(plan);
+                moveit::planning_interface::MoveGroupInterface::Plan current_plan;
+                auto plan_result = move_group_->plan(current_plan);
                 bool plan_success = (plan_result == moveit::core::MoveItErrorCode::SUCCESS);
                 
                 if (plan_success) {
-                    RCLCPP_INFO(this->get_logger(), "规划成功，执行轨迹");
-                    auto execute_result = move_group_->execute(plan);
-                    success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
-                        
-                    if (!success) {
-                            RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
+                    plans.push_back(current_plan);
+                    
+                    // 使用独立函数计算关节总运动量
+                    double total_movement = calculateTotalJointMovement(current_plan);
+                    
+                    RCLCPP_INFO(this->get_logger(), "规划方案 %d 的总关节运动量: %.4f", attempt, total_movement);
+                    
+                    // 检查是否为最佳方案
+                    if (total_movement < min_joint_movement) {
+                        min_joint_movement = total_movement;
+                        best_plan_index = plans.size() - 1;
                     }
                 } else {
-                    RCLCPP_WARN(this->get_logger(), "规划失败，增加容差后重试...");
-                    // 每次失败后增加容差
-                    position_tolerance *= 1.2;
-                    orientation_tolerance *= 1.2;
+                    RCLCPP_WARN(this->get_logger(), "规划尝试 %d 失败，错误代码: %d", attempt + 1, plan_result.val);
+                    
+                    // 每次失败后稍微增加容差
+                    position_tolerance *= 1.1;
+                    orientation_tolerance *= 1.1;
                 }
             }
 
-            if (!success) {
-                RCLCPP_ERROR(this->get_logger(), "在%d次尝试后规划或执行失败", max_attempts);
+            // 检查是否找到了有效的规划方案
+            if (best_plan_index >= 0) {
+                RCLCPP_INFO(this->get_logger(), "选择方案 %d 作为最优解，总运动量: %.4f", 
+                           best_plan_index, min_joint_movement);
+                
+                // 执行最优规划方案
+                auto& best_plan = plans[best_plan_index];
+                auto execute_result = move_group_->execute(best_plan);
+                bool execute_success = (execute_result == moveit::core::MoveItErrorCode::SUCCESS);
+                
+                if (!execute_success) {
+                    RCLCPP_ERROR(this->get_logger(), "执行失败，错误代码: %d", execute_result.val);
+                }
+                
+                return execute_success;
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "未找到有效的规划方案");
+                return false;
             }
-
-            return success;
         } catch (const std::exception& e) {
             RCLCPP_ERROR(this->get_logger(), "移动失败: %s", e.what());
             return false;
