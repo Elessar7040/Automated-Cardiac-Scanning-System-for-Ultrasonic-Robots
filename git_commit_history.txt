@@ -1,0 +1,255 @@
+commit 35d40a37a025dfd60fdf4de38a9f56e117c6e62f
+Author: feiyang <1142097478@qq.com>
+Date:   Fri Mar 28 14:13:22 2025 +0800
+
+    [ENH]: 优化机械臂路径规划
+    
+    增加多解策略，选取关节运动量最小的规划运动
+    在相对运动服务中增加笛卡尔规划运动
+    相对运动幅度较小时调用笛卡尔运动，若失败则回归BiTRRT
+
+commit 8f1d960b4eb62564914a50126a07ced61425c5a8
+Author: feiyang <1142097478@qq.com>
+Date:   Fri Mar 28 12:37:18 2025 +0800
+
+    [NEW]: 增加笛卡尔规划文件（不可用）
+    
+    增加笛卡尔空间规划服务器及测试文件
+    实际无法运行，存在未知问题
+
+commit de38cab981a6d976a160939237d20aa4702bae4f
+Author: feiyang <1142097478@qq.com>
+Date:   Thu Mar 27 20:33:46 2025 +0800
+
+    [FIX]: 更新moveit版本后修正的cmake
+    
+    增加新版本部分依赖
+
+commit 7f9447837a54c749d517629f3193631886abefa6
+Author: feiyang <1142097478@qq.com>
+Date:   Thu Mar 27 15:21:28 2025 +0800
+
+    [FIX]: 解决相对运动结果返回超时问题
+    
+    通过增加回调组，解决视觉伺服相对运动客户端回调不正常生效问题
+
+commit e311f2c176feb92253ef4c6f8eb8b0fa70c13573
+Author: feiyang <1142097478@qq.com>
+Date:   Wed Mar 26 20:22:40 2025 +0800
+
+    [NEW]: 增加Probe分离控制服务文件（未使用）
+
+commit 81095cd3723bc2e8891a7130b18c94445acf8399
+Author: feiyang <1142097478@qq.com>
+Date:   Wed Mar 26 17:11:17 2025 +0800
+
+    [NEW]: 增加视觉伺服功能测试
+    
+    增加视觉伺服功能测试
+    根据YOLO识别中心点差距控制机械臂相对位移
+
+commit d8680c2ca7444ab8a740ade0b87dfcb3c31b14a7
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 25 20:47:15 2025 +0800
+
+    [STYLE]: 将相对运动服务器移动到end_control_node
+    
+    将相对运动服务器移动到end_control_node
+    以解决end_control与planning_node互相依赖的问题
+
+commit fde0a451b4e965ff6ca1da305eb5e1293361ed69
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 25 17:48:44 2025 +0800
+
+    [FIX]: 修正插值方法测试文件输出文件描述
+
+commit eb370dec2b97c0c783216d370e2dbb1a067e580f
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 25 17:45:15 2025 +0800
+
+    [NEW]: 增加路径平滑测试文件
+    
+    增加路径平滑测试文件，对比线性插值，三次多项式插值，B样条插值
+    计划改为B样条插值或优化为NURBS插值
+
+commit ae56cc2bd8e455b2add903694eb44dd551b0e01e
+Author: feiyang <1142097478@qq.com>
+Date:   Wed Mar 19 15:42:35 2025 +0800
+
+    [NEW]: 增加Yolo节点测试
+    
+    增加yolo节点测试
+    修改pcl包名
+
+commit 5f1a8f5cf0b3dc3458255adc405a39d826570600
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 18 15:58:13 2025 +0800
+
+    [FIX]: 修正机械臂link与man碰撞检测问题
+    
+    修正russ_man_moveit启动配置，将russ_moveit修正为russ_man_moveit
+    因规划可检测机械臂与man碰撞，故原有upperarm_joint限位取消
+
+commit 5563f0e4028ace7c44d3cd592ec7b25a899b19ea
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 18 15:01:28 2025 +0800
+
+    [WIP]: 增加对心脏部位扫查的测试文件
+    
+    增加对心脏部位waypoint自动扫查的测试文件
+    由于机械臂Link与man_link的碰撞检测存在未知问题，
+    暂时增加了对upperarm_link的运动限位
+
+commit 43eae5bf1d1b96cae143b63db1f7e21e2cdfe0ea
+Author: feiyang <1142097478@qq.com>
+Date:   Mon Mar 17 16:44:57 2025 +0800
+
+    [NEW]: 增加yolo节点功能包
+
+commit 31651009679489f2a41b762d8130b32e99daaee1
+Author: feiyang <1142097478@qq.com>
+Date:   Mon Mar 17 16:31:57 2025 +0800
+
+    [NEW]: 增加yolo节点包
+
+commit 729dc04414b039af992f62b5206668563dc0bfd0
+Author: feiyang <1142097478@qq.com>
+Date:   Sun Mar 9 16:31:45 2025 +0800
+
+    [STYLE]: 增大数据图像字体
+
+commit 01adb78d6f1b46371f207818ffbedc88a558cdf2
+Author: feiyang <1142097478@qq.com>
+Date:   Sat Mar 8 16:45:52 2025 +0800
+
+    [ENH]: 生成数据图像统一刻度
+
+commit beb2e90120ebf71b1af6073f16a675ac506a976c
+Author: feiyang <1142097478@qq.com>
+Date:   Wed Mar 5 01:27:22 2025 +0800
+
+    [STYLE]: 删除部分冗余文件
+
+commit 8a32c429cd96aa951ffaf747aa2d21497a272272
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 4 20:47:44 2025 +0800
+
+    [STYLE]: 改动杂项文件路径
+
+commit 91fe2759da09190fb88640818f563e12f5e67d8e
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 4 01:58:03 2025 +0800
+
+    [FIX]: 修正动作反馈结果
+    
+    修复规划成功但执行失败情况下，result显示执行成功的问题
+    目前会在规划成功且执行成功后，返回result状态
+
+commit da65f2ddcf43d71b3b08344e2e389c55ad86bc5b
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Mar 4 01:44:54 2025 +0800
+
+    [NEW]: 添加人体urdf模型
+
+commit 6a4afa1bc9d57bb552e0bb95a3d6362d9c09bce8
+Author: feiyang <1142097478@qq.com>
+Date:   Tue Feb 25 01:34:48 2025 +0800
+
+    [NEW]: 增加运动学插件及路径规划算法对比测试
+    
+    增加运动学插件及路径规划算法对比测试文件
+    增加对上述测试结果的分析与输出
+
+commit 10f828845f91fc550e122b3b055f01cc77f4749e
+Author: feiyang <1142097478@qq.com>
+Date:   Mon Feb 24 00:22:08 2025 +0800
+
+    [FIX]: 修复点云坐标变换问题
+
+commit 2a23a07a4408dea243a0e38160e7a7d8e7f19da1
+Author: feiyang <1142097478@qq.com>
+Date:   Fri Feb 21 23:59:28 2025 +0800
+
+    [FIX]: 修正规划组名称
+
+commit 76f3870c77b49439374c77f71b066e9f39e4af48
+Author: feiyang <1142097478@qq.com>
+Date:   Fri Feb 21 23:42:58 2025 +0800
+
+    [NEW]: 更换完整机器人模型
+    
+    替换为完整的超声机器人模型
+    点云坐标变换还存在问题
+
+commit 6d251d7da4fbb592edb28d520f56ee4bab3bbd93
+Author: feiyang <1142097478@qq.com>
+Date:   Thu Feb 20 21:05:53 2025 +0800
+
+    [NEW]: 替换运动学插件为trac_ik
+
+commit b929cfb9e4db607971b3dbfbf29c08bada9726cf
+Author: feiyang <1142097478@qq.com>
+Date:   Thu Feb 20 20:35:37 2025 +0800
+
+    [NEW]: 替换运动学插件为trac_ik
+
+commit 6159daecc71394efdf6ad13eacbfc62c38fd77f7
+Author: feiyang <1142097478@qq.com>
+Date:   Thu Feb 13 22:21:12 2025 +0800
+
+    [NEW]: 增加简易图纸
+
+commit c91c0ef8e4c63266f7b94ddd8debb8ccae0660bc
+Author: feiyang <1142097478@qq.com>
+Date:   Mon Feb 3 19:34:01 2025 +0800
+
+    [WIP]: 优化测试
+    
+    增加obstacle（地面）节点启动
+    优化waypoint_client_test路径
+
+commit adf585d1220cf9ed04b817c8187f3465f759ca01
+Author: feiyang <1142097478@qq.com>
+Date:   Sun Jan 19 17:14:49 2025 +0800
+
+    [NEW]:waypoint and obstacle, end_control
+    
+    增加waypoint结构，可在路径点执行动作
+    增加障碍物服务，暂未启用
+
+commit d55980f79b93750cddd5ef63faaf8a68536d112c
+Author: feiyang <1142097478@qq.com>
+Date:   Sat Jan 4 15:29:46 2025 +0800
+
+    [NEW]: 增加对匹配中心的追踪
+
+commit 9b90d688a254b884fabd0a10a35bfa86bfa69c4b
+Author: feiyang <1142097478@qq.com>
+Date:   Sun Dec 29 16:53:57 2024 +0800
+
+    删除build文件夹
+
+commit 6a2b1e48705a7d7d41b821573812ec10ebc1ac9e
+Merge: 13d6789 80538ef
+Author: feiyang <1142097478@qq.com>
+Date:   Sun Dec 29 16:48:09 2024 +0800
+
+    Merge branch 'main' of https://github.com/Elessar7040/Automated-Cardiac-Scanning-System-for-Ultrasonic-Robots
+
+commit 80538ef200c48e0a8545e13673a9e8db634538ba
+Author: Elessar7040 <82284946+Elessar7040@users.noreply.github.com>
+Date:   Sun Dec 29 16:35:07 2024 +0800
+
+    Initial commit
+
+commit 13d678947a1b8f3edfdc9250d8fde82ac682493f
+Author: feiyang <1142097478@qq.com>
+Date:   Sun Dec 29 16:28:50 2024 +0800
+
+    第一次提交代码
+    
+    可实现Gazebo+rviz2+moveit2同步仿真
+    可正确处理点云数据
+    可图像匹配并输出目标中心点坐标
+    可根据坐标进行笛卡尔空间规划
+    可根据坐标进行逆运动学求解，通过关节空间规划

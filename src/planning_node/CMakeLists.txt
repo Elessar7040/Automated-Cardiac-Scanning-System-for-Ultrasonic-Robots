@@ -108,6 +108,13 @@ ament_target_dependencies(waypoint_action_client_test_3
   rclcpp
   rclcpp_action
 )
+add_executable(waypoint_action_client_test_4
+  test/waypoint_action_client_test_4.cpp
+)
+ament_target_dependencies(waypoint_action_client_test_4
+  rclcpp
+  rclcpp_action
+)
 add_executable(cartesian_linear_action_server
   src/cartesian_linear_action_server.cpp
 )
@@ -211,6 +218,9 @@ target_link_libraries(waypoint_action_client_test_2
 target_link_libraries(waypoint_action_client_test_3 
   "${cpp_typesupport_target}"
 )
+target_link_libraries(waypoint_action_client_test_4 
+  "${cpp_typesupport_target}"
+)
 target_link_libraries(cartesian_linear_action_server
   "${cpp_typesupport_target}"
 )
@@ -230,6 +240,7 @@ install(TARGETS
   waypoint_action_client_test_1
   waypoint_action_client_test_2
   waypoint_action_client_test_3
+  waypoint_action_client_test_4
   match_point_converter
   ik_planning_test
   trajectory_smooth_test

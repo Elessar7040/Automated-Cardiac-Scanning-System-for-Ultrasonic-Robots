@@ -15,20 +15,14 @@
  *     - 输入: arm_id (机械臂ID), start_pos (起始位姿), end_pos (目标位姿), step_size (轨迹点间距)
  *     - 输出: success (执行结果), message (结果信息)
  *
- * Service 服务:
- *   - glob_planning_setting: 用于配置全局避障功能
- *     - 输入: obstacle_avoidance_enabled (避障开关), planning_mode (规划模式)
- *     - 输出: success (配置结果), message (结果信息)
- *     - 规划模式:
- *       - 0: 普通模式 (默认，中等速度和精度)
- *       - 1: 安全模式 (低速，高精度)
- *       - 2: 快速模式 (高速，低精度)
- *       - 3: 精确模式 (低速，超高精度)
- *
  * 笛卡尔直线轨迹:
  *   - 从起点到终点生成直线轨迹
  *   - 使用三次多项式插值确保速度连续性
  *   - 可调节轨迹点密度满足不同精度需求
+ * 
+ * ************************************
+ *              未实际使用
+ * ************************************
  */
 
 #include <functional>
@@ -109,6 +103,7 @@ private:
         std::shared_ptr<const MoveEndLinear::Goal> goal)
     {
         (void)uuid;  // 标记参数为已使用
+        (void)goal;
         RCLCPP_INFO(this->get_logger(), "收到新的笛卡尔直线运动请求");
         return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
     }
