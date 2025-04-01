@@ -10,6 +10,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/filters/voxel_grid.h>
 #include <Eigen/Geometry>
+#include <pcl/io/pcd_io.h>
 
 class PointCloudTransformer : public rclcpp::Node 
 {
@@ -17,7 +18,14 @@ public:
     explicit PointCloudTransformer() : Node("pointcloud_transformer") 
     {
         // 初始化参数
-        this->declare_parameter("voxel_size", 0.05);  // 默认体素大小为1cm
+        this->declare_parameter("voxel_size", 0.01);
+
+        this->declare_parameter("save_cloud", false);                          // 是否保存点云
+        this->declare_parameter("cloud_save_path", "/home/elessar/russ_ws/ws7/src/pcl_node/point_output/filtered_cloud.pcd"); // 点云保存路径
+
+        save_cloud_ = this->get_parameter("save_cloud").as_bool();
+        cloud_save_path_ = this->get_parameter("cloud_save_path").as_string();
+
         voxel_size_ = this->get_parameter("voxel_size").as_double();
 
         // 初始化TF2
@@ -34,6 +42,11 @@ public:
             std::bind(&PointCloudTransformer::cloudCallback, this, std::placeholders::_1));
 
         RCLCPP_INFO(this->get_logger(), "PointCloud transformer initialized with voxel size: %f", voxel_size_);
+        if (save_cloud_)
+        {
+            RCLCPP_INFO(this->get_logger(), "Cloud will be saved to: %s", cloud_save_path_.c_str());
+        }
+
     }
 
 private:
@@ -103,6 +116,21 @@ private:
             output_cloud.header.frame_id = "world";
             output_cloud.header.stamp = input_cloud->header.stamp;
 
+            // 保存滤波后的点云
+            if (save_cloud_)
+            {
+                if (pcl::io::savePCDFile(cloud_save_path_, *filtered_cloud) == 0)
+                {
+                    RCLCPP_INFO(this->get_logger(), "Saved filtered point cloud to %s", cloud_save_path_.c_str());
+                    // 成功保存后关闭保存功能，避免重复保存
+                    save_cloud_ = false;
+                }
+                else
+                {
+                    RCLCPP_ERROR(this->get_logger(), "Failed to save point cloud to %s", cloud_save_path_.c_str());
+                }
+            }
+
             // 发布转换后的点云
             cloud_publisher_->publish(output_cloud);
 
@@ -130,6 +158,10 @@ private:
 
     // 体素滤波参数
     double voxel_size_;
+
+    // 点云保存相关参数
+    bool save_cloud_;
+    std::string cloud_save_path_;
 };
 
 int main(int argc, char* argv[])

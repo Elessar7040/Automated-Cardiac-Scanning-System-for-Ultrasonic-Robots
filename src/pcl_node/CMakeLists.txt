@@ -32,6 +32,9 @@ find_package(pcl_ros REQUIRED)
 add_executable(pointcloud_transform_node 
   src/pointcloud_transform.cpp
 )
+add_executable(pointcloud_normal_estimator_node 
+  src/pointcloud_normal_estimator.cpp
+)
 
 # 包含目录
 target_include_directories(pointcloud_transform_node PUBLIC
@@ -41,12 +44,24 @@ target_include_directories(pointcloud_transform_node PUBLIC
   ${pcl_ros_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
+target_include_directories(pointcloud_normal_estimator_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${PCL_INCLUDE_DIRS}
+  ${pcl_ros_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
 
 # 设置编译特性
 target_compile_features(pointcloud_transform_node PUBLIC c_std_99 cxx_std_17)
-
+target_compile_features(pointcloud_normal_estimator_node PUBLIC c_std_99 cxx_std_17)
 # 链接库
 target_link_libraries(pointcloud_transform_node
+  ${PCL_LIBRARIES}
+  ${pcl_ros_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+target_link_libraries(pointcloud_normal_estimator_node
   ${PCL_LIBRARIES}
   ${pcl_ros_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -64,9 +79,22 @@ ament_target_dependencies(pointcloud_transform_node
   geometry_msgs
   pcl_ros
 )
+ament_target_dependencies(pointcloud_normal_estimator_node
+  rclcpp
+  sensor_msgs
+  tf2
+  tf2_ros
+  tf2_sensor_msgs
+  tf2_geometry_msgs
+  pcl_conversions
+  geometry_msgs
+  pcl_ros
+)
 
 # 安装目标
 install(TARGETS pointcloud_transform_node
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS pointcloud_normal_estimator_node
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
