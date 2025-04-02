@@ -269,6 +269,7 @@ private:
                 case end_control_node::srv::EndControl::Request::TYPE_PROBE:
                     {  // 添加花括号创建新的作用域
                         bool probe_success = control_probe(request->pose);
+                        // bool probe_success = control_probe_2(request->pose);
                         if (!probe_success)
                         {
                             RCLCPP_WARN(this->get_logger(), "探针未能完全对准目标");

@@ -8,6 +8,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <thread>
 #include <memory>
+#include <Eigen/Geometry> // 添加Eigen几何库，用于四元数计算
 
 class PointCloudNormalEstimator : public rclcpp::Node
 {
@@ -16,7 +17,7 @@ public:
     {
         // 初始化参数
         this->declare_parameter("cloud_path", "/home/elessar/russ_ws/ws7/src/pcl_node/point_output/filtered_cloud.pcd"); // 点云保存路径
-        this->declare_parameter("normal_radius", 0.03); // 法向量估计的搜索半径
+        this->declare_parameter("normal_radius", 0.04); // 法向量估计的搜索半径
         this->declare_parameter("visualize", true);     // 是否可视化
 
         // 添加查询点参数
@@ -80,6 +81,46 @@ public:
         }
 
         return Eigen::Vector3f(nearest_point.normal_x, nearest_point.normal_y, nearest_point.normal_z);
+    }
+
+    // 根据法向量计算四元数
+    Eigen::Quaternionf getQuaternionFromNormal(const Eigen::Vector3f &normal)
+    {
+        // 确保法向量为单位向量
+        Eigen::Vector3f normalized_normal = normal.normalized();
+        
+        // 假设法向量指向z轴正方向
+        Eigen::Vector3f z_axis(0, 0, 1);
+        
+        // 计算旋转轴（法向量与z轴的叉积）
+        Eigen::Vector3f rotation_axis = z_axis.cross(normalized_normal);
+        
+        // 如果法向量与z轴平行，需要特殊处理
+        if (rotation_axis.norm() < 1e-6) {
+            // 如果法向量指向z轴正方向，则不需要旋转
+            if (normalized_normal.dot(z_axis) > 0) {
+                return Eigen::Quaternionf::Identity();
+            } else {
+                // 如果法向量指向z轴负方向，则旋转180度
+                return Eigen::Quaternionf(0, 1, 0, 0); // 绕x轴旋转180度
+            }
+        }
+        
+        // 计算旋转角度（法向量与z轴的夹角）
+        float angle = std::acos(normalized_normal.dot(z_axis));
+        
+        // 使用旋转轴和角度创建四元数
+        rotation_axis.normalize();
+        return Eigen::Quaternionf(Eigen::AngleAxisf(angle, rotation_axis));
+    }
+
+    // 获取点位的法向量和对应的四元数
+    std::pair<Eigen::Vector3f, Eigen::Quaternionf> getNormalAndQuaternion(
+        const Eigen::Vector3f &position, float radius = 0.01)
+    {
+        Eigen::Vector3f normal = getNormalAtPosition(position, radius);
+        Eigen::Quaternionf quaternion = getQuaternionFromNormal(normal);
+        return {normal, quaternion};
     }
 
 private:
@@ -189,13 +230,29 @@ private:
         double z = this->get_parameter("query_point_z").as_double();
         double radius = this->get_parameter("query_radius").as_double();
 
-        // 查询法向量
+        // 查询法向量和四元数
         Eigen::Vector3f position(x, y, z);
-        Eigen::Vector3f normal = getNormalAtPosition(position, radius);
+        auto [normal, quaternion] = getNormalAndQuaternion(position, radius);
 
+        // 输出法向量
         RCLCPP_INFO(this->get_logger(),
                     "点 (%.3f, %.3f, %.3f) 的法向量为 (%.3f, %.3f, %.3f)",
                     x, y, z, normal.x(), normal.y(), normal.z());
+                    
+        // 输出四元数
+        RCLCPP_INFO(this->get_logger(),
+                    "对应的四元数为 w=%.3f, x=%.3f, y=%.3f, z=%.3f",
+                    quaternion.w(), quaternion.x(), quaternion.y(), quaternion.z());
+                    
+        // 输出旋转矩阵
+        Eigen::Matrix3f rotation_matrix = quaternion.toRotationMatrix();
+        RCLCPP_INFO(this->get_logger(), "对应的旋转矩阵为:");
+        RCLCPP_INFO(this->get_logger(), "[%.3f, %.3f, %.3f]", 
+                   rotation_matrix(0,0), rotation_matrix(0,1), rotation_matrix(0,2));
+        RCLCPP_INFO(this->get_logger(), "[%.3f, %.3f, %.3f]", 
+                   rotation_matrix(1,0), rotation_matrix(1,1), rotation_matrix(1,2));
+        RCLCPP_INFO(this->get_logger(), "[%.3f, %.3f, %.3f]", 
+                   rotation_matrix(2,0), rotation_matrix(2,1), rotation_matrix(2,2));
     }
 
     std::string cloud_path_;

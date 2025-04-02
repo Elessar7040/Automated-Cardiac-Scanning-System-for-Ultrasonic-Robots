@@ -88,5 +88,6 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/elessar/russ_ws/ws7/src/russ_moveit_node"
 }

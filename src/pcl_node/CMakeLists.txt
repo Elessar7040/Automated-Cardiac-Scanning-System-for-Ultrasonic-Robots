@@ -13,7 +13,7 @@ endif()
 # 查找Boost包
 find_package(Boost REQUIRED COMPONENTS system filesystem date_time)
 
-set(PCL_DIR "/usr/local/share/pcl-1.14")
+# set(PCL_DIR "/usr/local/share/pcl-1.14")
 
 # 查找所需的包
 find_package(ament_cmake REQUIRED)
