@@ -133,7 +133,16 @@ ament_target_dependencies(cartesian_linear_action_client_test
   geometry_msgs
   moveit_ros_planning_interface
 )
-
+add_executable(joint_smooth 
+  test/joint_smooth.cpp
+)
+ament_target_dependencies(joint_smooth
+  rclcpp
+  moveit_ros_planning_interface
+  moveit_core
+  moveit_msgs
+  geometry_msgs
+)
 ament_target_dependencies(moveit_cartesian_test
   rclcpp
   moveit_ros_planning_interface
@@ -244,6 +253,7 @@ install(TARGETS
   match_point_converter
   ik_planning_test
   trajectory_smooth_test
+  joint_smooth
   cartesian_linear_action_server
   cartesian_linear_action_client_test
   DESTINATION lib/${PROJECT_NAME}
