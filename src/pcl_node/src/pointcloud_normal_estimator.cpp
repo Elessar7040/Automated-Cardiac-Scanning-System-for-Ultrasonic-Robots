@@ -17,7 +17,7 @@ public:
     {
         // 初始化参数
         this->declare_parameter("cloud_path", "/home/elessar/russ_ws/ws7/src/pcl_node/point_output/filtered_cloud.pcd"); // 点云保存路径
-        this->declare_parameter("normal_radius", 0.04); // 法向量估计的搜索半径
+        this->declare_parameter("normal_radius", 0.1); // 法向量估计的搜索半径
         this->declare_parameter("visualize", true);     // 是否可视化
 
         // 添加查询点参数

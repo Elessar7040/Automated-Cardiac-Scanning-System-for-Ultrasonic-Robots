@@ -41,6 +41,8 @@ add_executable(voxel_size_test
 add_executable(normal_radius_test
   test/normal_radius_test.cpp
 )
+add_executable(view_point_cloud_normals test/view_point_cloud_normals.cpp)
+target_link_libraries(view_point_cloud_normals ${PCL_LIBRARIES})
 
 # 包含目录
 target_include_directories(pointcloud_transform_node PUBLIC
@@ -151,6 +153,8 @@ install(TARGETS pointcloud_normal_estimator_node
 install(TARGETS voxel_size_test
   DESTINATION lib/${PROJECT_NAME})
 install(TARGETS normal_radius_test
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS view_point_cloud_normals
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
