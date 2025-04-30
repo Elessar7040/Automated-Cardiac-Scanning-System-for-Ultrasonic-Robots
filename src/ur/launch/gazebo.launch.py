@@ -24,12 +24,15 @@ def generate_launch_description():
     # gazebo_world_path = os.path.join(pkg_share, 'world/my_POPY_world.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/Painter_world.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/Painter2_world.world')
-    gazebo_world_path = os.path.join(pkg_share, 'world/Painter2_world_middle.world')
+    # gazebo_world_path = os.path.join(pkg_share, 'world/Painter2_world_middle.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/Painter2_world_high.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/my_chess_world_2.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/my_chess_world_3.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/my_chess_world_4.world')
     # gazebo_world_path = os.path.join(pkg_share, 'world/my_chess_world_5.world')
+    # gazebo_world_path = os.path.join(pkg_share, 'world/cardiac_world.world')
+    # gazebo_world_path = os.path.join(pkg_share, 'world/cardiac_2m_world.world')
+    gazebo_world_path = os.path.join(pkg_share, 'world/cardiac_1_3m_world.world')
 
     # Start Gazebo server
     start_gazebo_cmd =  ExecuteProcess(

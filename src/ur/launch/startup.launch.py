@@ -49,7 +49,7 @@ def generate_launch_description():
         output='screen'
     )
     cartesian_rel_action_server_node = Node(
-        package='planning_node',
+        package='end_control_node',
         executable='cartesian_rel_action_server',
         name='cartesian_rel_action_server_node',
         parameters=[
@@ -84,10 +84,10 @@ def generate_launch_description():
     ld.add_action(moveit_launch)
 
     # 可同时开启，实现控制接口 abs, rel, 实现障碍物避障与路径规划配置
-    ld.add_action(obstacle_service_node)
-    # ld.add_action(cartesian_abs_action_server_node)
+    # ld.add_action(obstacle_service_node)
+    ld.add_action(cartesian_abs_action_server_node)
     # ld.add_action(cartesian_abs_action_client_node)
-    # ld.add_action(cartesian_rel_action_server_node)
+    ld.add_action(cartesian_rel_action_server_node)
 
     # 开启后，可实现控制接口 waypoint
     ld.add_action(waypoint_action_server_node)

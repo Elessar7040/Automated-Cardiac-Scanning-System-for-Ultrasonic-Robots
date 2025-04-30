@@ -7,7 +7,7 @@ import glob
 rrt_files = glob.glob('src/planning_node/test_results/KDL_RRTConnect_test_results_*.csv')
 bitrrt_files = glob.glob('src/planning_node/test_results/TRAC_IK_BiTRRT_test_results_*.csv')  # 修正文件名
 
-print("找到的RRT文件:", rrt_files)
+print("找到的RRT-Connect文件:", rrt_files)
 print("找到的BiTRRT文件:", bitrrt_files)
 
 # 存储数据
@@ -97,7 +97,7 @@ bitrrt_means = {
     'Smoothness': np.mean([np.mean(d['smoothness']) for d in bitrrt_data])
 }
 
-print("RRT平均值:", rrt_means)
+print("RRT-Connect平均值:", rrt_means)
 print("BiTRRT平均值:", bitrrt_means)
 
 # 创建柱状图
@@ -106,7 +106,7 @@ x = np.arange(len(titles))
 width = 0.35
 
 # 绘制柱状图
-plt.bar(x - width/2, list(rrt_means.values()), width, label='RRTConnect', color='skyblue')
+plt.bar(x - width/2, list(rrt_means.values()), width, label='RRT-Connect', color='skyblue')
 plt.bar(x + width/2, list(bitrrt_means.values()), width, label='BiTRRT', color='lightcoral')
 
 # 设置图表属性
@@ -124,5 +124,80 @@ for i, v in enumerate(list(bitrrt_means.values())):
 
 plt.tight_layout()
 plt.savefig('src/planning_node/test_results/comparison_bars.png')
+plt.show()
+plt.close()
+
+# 新增：创建仅包含时间、路径长度和关节运动量的组合图表
+# 创建3x2的折线图
+selected_metrics = ['planning_time', 'path_length', 'joint_movement']
+selected_titles = ['Planning Time (s)', 'Path Length (m)', 'Joint Movement (rad)']
+
+fig, axes = plt.subplots(3, 2, figsize=(16, 15))
+fig.suptitle('Time, Path Length and Joint Movement Comparison', fontsize=20)
+
+# 绘制折线图
+for i, (metric, title) in enumerate(zip(selected_metrics, selected_titles)):
+    # 计算当前指标的最大值和最小值
+    all_values = []
+    for data in rrt_data + bitrrt_data:
+        all_values.extend(data[metric])
+    y_min = min(all_values)
+    y_max = max(all_values)
+    
+    # RRTConnect
+    ax = axes[i, 0]
+    for j in range(len(rrt_data)):
+        ax.plot(rrt_data[j][metric], label=f'Test {j+1}', linewidth=2)
+    ax.set_title(f'RRTConnect - {title}', fontsize=16)
+    ax.set_xlabel('Position', fontsize=14)
+    ax.set_ylabel(title, fontsize=14)
+    ax.tick_params(axis='both', labelsize=14)
+    ax.set_ylim(y_min, y_max)
+    ax.grid(True)
+    ax.legend(loc='upper right', fontsize=14)
+
+    # BiTRRT
+    ax = axes[i, 1]
+    for j in range(len(bitrrt_data)):
+        ax.plot(bitrrt_data[j][metric], label=f'Test {j+1}', linewidth=2)
+    ax.set_title(f'BiTRRT - {title}', fontsize=16)
+    ax.set_xlabel('Position', fontsize=14)
+    ax.set_ylabel(title, fontsize=14)
+    ax.tick_params(axis='both', labelsize=14)
+    ax.set_ylim(y_min, y_max)
+    ax.grid(True)
+    ax.legend(loc='upper right', fontsize=14)
+
+plt.tight_layout(rect=[0, 0, 1, 0.97])  # 为顶部标题留出空间
+plt.savefig('src/planning_node/test_results/time_length_movement_comparison.png', dpi=300)
+plt.show()
+plt.close()
+
+# 创建仅包含时间、路径长度和关节运动量的柱状图
+selected_metrics = ['Planning Time (s)', 'Path Length (m)', 'Joint Movement (rad)']
+selected_rrt_values = [rrt_means[metric] for metric in selected_metrics]
+selected_bitrrt_values = [bitrrt_means[metric] for metric in selected_metrics]
+
+plt.figure(figsize=(10, 6))
+x = np.arange(len(selected_metrics))
+width = 0.35
+
+plt.bar(x - width/2, selected_rrt_values, width, label='RRT-Connect', color='skyblue')
+plt.bar(x + width/2, selected_bitrrt_values, width, label='BiTRRT', color='lightcoral')
+
+plt.ylabel('Average Value', fontsize=16)
+plt.title('Average Metrics Comparison', fontsize=18)
+plt.xticks(x, selected_metrics, fontsize=14)
+plt.yticks(fontsize=14)
+plt.legend(fontsize=14)
+
+# 在柱子上添加数值标签
+for i, v in enumerate(selected_rrt_values):
+    plt.text(i - width/2, v, f'{v:.3f}', ha='center', va='bottom', fontsize=14)
+for i, v in enumerate(selected_bitrrt_values):
+    plt.text(i + width/2, v, f'{v:.3f}', ha='center', va='bottom', fontsize=14)
+
+plt.tight_layout()
+plt.savefig('src/planning_node/test_results/time_length_movement_bars.png', dpi=300)
 plt.show()
 plt.close()

@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'yolo_detector_node = yolo_node.detect_ros2:main',
+            'yolo_detector_node_2 = yolo_node.detect_ros2_2:main',
             'yolo_test_node = yolo_node.detect_ros2_test:main',
             'yolo_test_node_2 = yolo_node.detect_ros2_test_2:main',
         ],

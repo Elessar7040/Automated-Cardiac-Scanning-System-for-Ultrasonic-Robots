@@ -368,37 +368,37 @@ private:
         }
         verify_obstacle_exists("ground_plane");
 
-        // 添加预设的箱体障碍物
-        geometry_msgs::msg::Pose box_pose;
-        box_pose.position.x = 1.5;
-        box_pose.position.y = 0.0;
-        box_pose.position.z = 0.25;
-        box_pose.orientation.w = 1.0;
+        // // 添加预设的箱体障碍物
+        // geometry_msgs::msg::Pose box_pose;
+        // box_pose.position.x = 1.5;
+        // box_pose.position.y = 0.0;
+        // box_pose.position.z = 0.25;
+        // box_pose.orientation.w = 1.0;
 
-        add_obstacle(
-            "box_1",
-            obstacle_node::srv::ManageObstacle::Request::BOX,
-            {0.1, 0.1, 0.1},  // 长宽高
-            box_pose
-        );
+        // add_obstacle(
+        //     "box_1",
+        //     obstacle_node::srv::ManageObstacle::Request::BOX,
+        //     {0.1, 0.1, 0.1},  // 长宽高
+        //     box_pose
+        // );
 
-        verify_obstacle_exists("box_1");
+        // verify_obstacle_exists("box_1");
 
-        // 添加预设的圆柱体障碍物
-        geometry_msgs::msg::Pose cylinder_pose;
-        cylinder_pose.position.x = 1.5;
-        cylinder_pose.position.y = 0.0;
-        cylinder_pose.position.z = 0.35;
-        cylinder_pose.orientation.w = 1.0;
+        // // 添加预设的圆柱体障碍物
+        // geometry_msgs::msg::Pose cylinder_pose;
+        // cylinder_pose.position.x = 1.5;
+        // cylinder_pose.position.y = 0.0;
+        // cylinder_pose.position.z = 0.35;
+        // cylinder_pose.orientation.w = 1.0;
 
-        add_obstacle(
-            "cylinder_1",
-            obstacle_node::srv::ManageObstacle::Request::CYLINDER,
-            {0.05, 0.05},  // 半径和高度
-            cylinder_pose
-        );
+        // add_obstacle(
+        //     "cylinder_1",
+        //     obstacle_node::srv::ManageObstacle::Request::CYLINDER,
+        //     {0.05, 0.05},  // 半径和高度
+        //     cylinder_pose
+        // );
 
-        verify_obstacle_exists("cylinder_1");
+        // verify_obstacle_exists("cylinder_1");
     }
 
     bool add_material(

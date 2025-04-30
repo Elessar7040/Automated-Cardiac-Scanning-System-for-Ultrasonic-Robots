@@ -14,6 +14,10 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(end_control_node REQUIRED)
+find_package(moveit_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(control_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -115,6 +119,13 @@ ament_target_dependencies(waypoint_action_client_test_4
   rclcpp
   rclcpp_action
 )
+add_executable(waypoint_action_client_test_5
+  test/waypoint_action_client_test_5.cpp
+)
+ament_target_dependencies(waypoint_action_client_test_5
+  rclcpp
+  rclcpp_action
+)
 add_executable(cartesian_linear_action_server
   src/cartesian_linear_action_server.cpp
 )
@@ -142,6 +153,28 @@ ament_target_dependencies(joint_smooth
   moveit_core
   moveit_msgs
   geometry_msgs
+)
+add_executable(joint_smooth_2 
+  test/joint_smooth_2.cpp
+)
+ament_target_dependencies(joint_smooth_2
+  rclcpp
+  moveit_ros_planning_interface
+  moveit_core
+  moveit_msgs
+  geometry_msgs
+  trajectory_msgs
+  control_msgs
+)
+add_executable(trajectory_monitor
+  src/trajectory_monitor.cpp
+)
+ament_target_dependencies(trajectory_monitor
+  rclcpp
+  moveit_msgs
+  sensor_msgs
+  trajectory_msgs
+  control_msgs
 )
 ament_target_dependencies(moveit_cartesian_test
   rclcpp
@@ -230,6 +263,9 @@ target_link_libraries(waypoint_action_client_test_3
 target_link_libraries(waypoint_action_client_test_4 
   "${cpp_typesupport_target}"
 )
+target_link_libraries(waypoint_action_client_test_5 
+  "${cpp_typesupport_target}"
+)
 target_link_libraries(cartesian_linear_action_server
   "${cpp_typesupport_target}"
 )
@@ -250,10 +286,13 @@ install(TARGETS
   waypoint_action_client_test_2
   waypoint_action_client_test_3
   waypoint_action_client_test_4
+  waypoint_action_client_test_5
   match_point_converter
   ik_planning_test
   trajectory_smooth_test
   joint_smooth
+  joint_smooth_2
+  trajectory_monitor
   cartesian_linear_action_server
   cartesian_linear_action_client_test
   DESTINATION lib/${PROJECT_NAME}
