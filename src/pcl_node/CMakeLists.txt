@@ -35,6 +35,12 @@ add_executable(pointcloud_transform_node
 add_executable(pointcloud_normal_estimator_node 
   src/pointcloud_normal_estimator.cpp
 )
+add_executable(voxel_size_test
+  test/voxel_size_test.cpp
+)
+add_executable(normal_radius_test
+  test/normal_radius_test.cpp
+)
 
 # 包含目录
 target_include_directories(pointcloud_transform_node PUBLIC
@@ -51,17 +57,42 @@ target_include_directories(pointcloud_normal_estimator_node PUBLIC
   ${pcl_ros_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
 )
-
+target_include_directories(voxel_size_test PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${PCL_INCLUDE_DIRS}
+  ${pcl_ros_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
+target_include_directories(normal_radius_test PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${PCL_INCLUDE_DIRS}
+  ${pcl_ros_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
 # 设置编译特性
 target_compile_features(pointcloud_transform_node PUBLIC c_std_99 cxx_std_17)
 target_compile_features(pointcloud_normal_estimator_node PUBLIC c_std_99 cxx_std_17)
+target_compile_features(voxel_size_test PUBLIC c_std_99 cxx_std_17)
+target_compile_features(normal_radius_test PUBLIC c_std_99 cxx_std_17)
 # 链接库
 target_link_libraries(pointcloud_transform_node
-  ${PCL_LIBRARIES}
+  ${PCL_LIBRARIES}  
   ${pcl_ros_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 target_link_libraries(pointcloud_normal_estimator_node
+  ${PCL_LIBRARIES}
+  ${pcl_ros_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+target_link_libraries(voxel_size_test
+  ${PCL_LIBRARIES}
+  ${pcl_ros_LIBRARIES}
+  ${Boost_LIBRARIES}
+)
+target_link_libraries(normal_radius_test
   ${PCL_LIBRARIES}
   ${pcl_ros_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -90,11 +121,36 @@ ament_target_dependencies(pointcloud_normal_estimator_node
   geometry_msgs
   pcl_ros
 )
-
+ament_target_dependencies(voxel_size_test
+  rclcpp
+  sensor_msgs
+  tf2
+  tf2_ros
+  tf2_sensor_msgs
+  tf2_geometry_msgs
+  pcl_conversions
+  geometry_msgs
+  pcl_ros
+)
+ament_target_dependencies(normal_radius_test
+  rclcpp
+  sensor_msgs
+  tf2
+  tf2_ros
+  tf2_sensor_msgs
+  tf2_geometry_msgs
+  pcl_conversions
+  geometry_msgs
+  pcl_ros
+)
 # 安装目标
 install(TARGETS pointcloud_transform_node
   DESTINATION lib/${PROJECT_NAME})
 install(TARGETS pointcloud_normal_estimator_node
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS voxel_size_test
+  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS normal_radius_test
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

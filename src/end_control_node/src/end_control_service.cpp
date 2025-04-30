@@ -118,18 +118,18 @@ private:
     
     // 存储图像尺寸
     // 用于russ_group
-    // int image_width_ = 1264;  // 默认值
-    // int image_height_ = 880; // 默认值
+    int image_width_ = 1264;  // 默认值
+    int image_height_ = 880; // 默认值
 
     // 用于ur_group图像跟踪测试
-    int image_width_ = 640; // 默认值
-    int image_height_ = 480; // 默认值
+    // int image_width_ = 640; // 默认值
+    // int image_height_ = 480; // 默认值
     bool has_image_ = false;
 
     // 视觉伺服参数
     // 像素到米的转换因子
-    // const double pixel_to_meter_factor_ = 0.0002;  // 用于russ_group
-    const double pixel_to_meter_factor_ = 0.0005;  // 用于ur_group图像跟踪测试
+    const double pixel_to_meter_factor_ = 0.0002;  // 用于russ_group
+    // const double pixel_to_meter_factor_ = 0.0005;  // 用于ur_group图像跟踪测试
     const int max_visual_servo_attempts_ = 3;      // 最大视觉伺服尝试次数
     const double position_tolerance_pixels_ = 10.0; // 位置容差（像素）
     
@@ -414,18 +414,18 @@ private:
             
             // 创建目标消息
             auto goal_msg = MoveEndToRelPos::Goal();
-            // goal_msg.arm_id = "russ_group";
-            goal_msg.arm_id = "ur_group";
+            goal_msg.arm_id = "russ_group";
+            // goal_msg.arm_id = "ur_group";
 
             // 用于russ_group
-            // goal_msg.pos.position.x = -error_x * pixel_to_meter_factor_;
-            // goal_msg.pos.position.y = -error_y * pixel_to_meter_factor_;
-            // goal_msg.pos.position.z = 0.0;
+            goal_msg.pos.position.x = -error_x * pixel_to_meter_factor_;
+            goal_msg.pos.position.y = -error_y * pixel_to_meter_factor_;
+            goal_msg.pos.position.z = 0.0;
 
             // 用于ur_group图像跟踪测试
-            goal_msg.pos.position.x = error_x * pixel_to_meter_factor_;
-            goal_msg.pos.position.y = 0.0;
-            goal_msg.pos.position.z = -error_y * pixel_to_meter_factor_;
+            // goal_msg.pos.position.x = error_x * pixel_to_meter_factor_;
+            // goal_msg.pos.position.y = 0.0;
+            // goal_msg.pos.position.z = -error_y * pixel_to_meter_factor_;
 
             goal_msg.pos.orientation.x = 0.0;
             goal_msg.pos.orientation.y = 0.0;

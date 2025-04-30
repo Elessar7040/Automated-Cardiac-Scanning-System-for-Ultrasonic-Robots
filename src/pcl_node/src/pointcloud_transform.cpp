@@ -18,9 +18,9 @@ public:
     explicit PointCloudTransformer() : Node("pointcloud_transformer") 
     {
         // 初始化参数
-        this->declare_parameter("voxel_size", 0.01);
+        this->declare_parameter("voxel_size", 0.02);
 
-        this->declare_parameter("save_cloud", false);                          // 是否保存点云
+        this->declare_parameter("save_cloud", true);                          // 是否保存点云
         this->declare_parameter("cloud_save_path", "/home/elessar/russ_ws/ws7/src/pcl_node/point_output/filtered_cloud.pcd"); // 点云保存路径
 
         save_cloud_ = this->get_parameter("save_cloud").as_bool();
