@@ -94,6 +94,16 @@ def generate_launch_description():
         output='screen'
     )
 
+    yolo_test_node_2 = Node(
+        package='yolo_node',
+        executable='yolo_test_node_2',
+        name='yolo_test_node_2',
+        parameters=[
+            {"use_sim_time": True}
+        ],
+        output='screen'
+    )
+
     # 创建启动描述
     ld = LaunchDescription()
     
@@ -111,5 +121,6 @@ def generate_launch_description():
     # 开启后，可实现控制接口 waypoint
     ld.add_action(waypoint_action_server_node)
     ld.add_action(end_control_node)
-
+    ld.add_action(yolo_test_node_2)
+    
     return ld 
